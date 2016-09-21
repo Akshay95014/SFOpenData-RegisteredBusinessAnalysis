@@ -1,0 +1,44 @@
+<div>
+    <h4>Details for Supervisory District {{district_num}}</h4>
+</div>
+
+
+
+<div ng-show="neighborhoodBusinesses">
+    <h2>Businesses by Neighborhood</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Neighborhood</th>
+                <th>Number of Businesses</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="entry in neighborhoodBusinesses">
+                <td>{{entry.neighborhood}}</td>
+                <td>{{entry.count}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div ng-show="industryBusinesses">
+    <h2>Businesses by Industry</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Industry</th>
+                <th>Number of Businesses</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="entry in industryBusinesses">
+                <td ng-show="entry.industry">{{entry.industry}}</td>
+                <td ng-hide="entry.industry">Unlabelled</td>
+                <td>{{entry.count}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<a href="#/main"> Go back to main page </a>

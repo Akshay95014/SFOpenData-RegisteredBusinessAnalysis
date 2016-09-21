@@ -18,6 +18,10 @@
                 templateUrl: "main.html",
                 controller: "MainController" //since we specify the controller here, we don't need to specify in main.html
             })
+            .when("/district/:district_num", {
+                templateUrl: "district_details.html",
+                controller: "DistrictController"
+            })
             .otherwise({
                 redirectTo: "/main"
             });

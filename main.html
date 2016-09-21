@@ -43,6 +43,7 @@
                 <tr>
                     <th>Supervisory District</th>
                     <th>Number of Businesses</th>
+                    <th>Details</th>
                 </tr>
             </thead>
             <tbody>
@@ -50,6 +51,7 @@
                     <td ng-show="bizByDist.supervisor_district">{{bizByDist.supervisor_district | number}}</td>
                     <td ng-hide="bizByDist.supervisor_district">Unlabelled</td>
                     <td>{{bizByDist.count | number}}</td>
+                    <td><a href="#/district/{{bizByDist.supervisor_district}}">Details</a></td>
                 </tr>
             </tbody>
         </table>
@@ -76,20 +78,22 @@
     </div>
 
     <!-- # Businesses Per Year -->
-    <div ng-show="businessByYear">
+    <div ng-show="businessesByYear">
         <h2>Business by Year (Raw Data)</h2>
         <table>
             <thead>
                 <tr>
                     <th>Year</th>
                     <th>Number of Businesses Opened</th>
+                    <th>Number of Businesses Closed</th>
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="bizByYear in businessByYear | orderBy: '-year'">
+                <tr ng-repeat="bizByYear in businessesByYear | orderBy: '-year'">
                     <td ng-show="bizByYear.year">{{bizByYear.year | date : 'yyyy'}}</td>
                     <td ng-hide="bizByYear.year">Unlabelled</td>
-                    <td>{{bizByYear.count | number}}</td>
+                    <td>{{bizByYear.openedBusinesses | number}}</td>
+                    <td>{{bizByYear.closedBusinesses | number}}</td>
                 </tr>
             </tbody>
         </table>
