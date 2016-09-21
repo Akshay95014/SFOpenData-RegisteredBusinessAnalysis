@@ -34,4 +34,64 @@
             </tbody>
         </table>
     </div>
+
+    <!-- # Businesses Per District -->
+    <div ng-show="businessByDistrict">
+        <h2>Business by District (Raw Data)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Supervisory District</th>
+                    <th>Number of Businesses</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="bizByDist in businessByDistrict | orderBy: 'supervisor_district'">
+                    <td ng-show="bizByDist.supervisor_district">{{bizByDist.supervisor_district | number}}</td>
+                    <td ng-hide="bizByDist.supervisor_district">Unlabelled</td>
+                    <td>{{bizByDist.count | number}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- # Businesses Per Industry -->
+    <div ng-show="businessByIndustry">
+        <h2>Business by Industry (Raw Data)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>NAIC Code Description / Industry</th>
+                    <th>Number of Businesses</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="bizByIndustry in businessByIndustry | orderBy: 'count'">
+                    <td ng-show="bizByIndustry.naic_code_description">{{bizByIndustry.naic_code_description}}</td>
+                    <td ng-hide="bizByIndustry.naic_code_description">Unlabelled</td>
+                    <td>{{bizByIndustry.count | number}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- # Businesses Per Year -->
+    <div ng-show="businessByYear">
+        <h2>Business by Year (Raw Data)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Year</th>
+                    <th>Number of Businesses Opened</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="bizByYear in businessByYear | orderBy: '-year'">
+                    <td ng-show="bizByYear.year">{{bizByYear.year | date : 'yyyy'}}</td>
+                    <td ng-hide="bizByYear.year">Unlabelled</td>
+                    <td>{{bizByYear.count | number}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
