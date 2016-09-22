@@ -28,22 +28,30 @@
         var onBizByDistrict = function(data) {
 
 
+            $scope.businessByDistrict = data;
+            $scope.totalBusinesses = 0;
+
+            angular.forEach($scope.businessByDistrict, function(business) {
+                $scope.totalBusinesses += parseFloat(business.count);
+            });
+
+            $scope.businessByDistrict_forChart = [];
+
             //This will convert all numeric strings to numbers
             angular.forEach(data, function(business) {
-                if (business.supervisor_district)
+                if (business.supervisor_district) {
                     business.supervisor_district = parseFloat(business.supervisor_district);
-                else {
-                    business.supervisor_district = "Unlabelled";
+                    business.count = parseFloat(business.count);
+                    business.percent = ((business.count / $scope.totalBusinesses) * 100).toFixed(2);
+                    $scope.businessByDistrict_forChart.push(business);
                 }
-                business.count = parseFloat(business.count);
             });
-            $scope.businessByDistrict = data;
         };
 
         $scope.dataFromBizByDistPromise = function() {
             var deferred = $q.defer();
 
-            var data = $scope.businessByDistrict;
+            var data = $scope.businessByDistrict_forChart;
 
             deferred.resolve(data)
             return deferred.promise;
@@ -73,14 +81,29 @@
                     labelRotation: 45
                 },
                 valueAxes: [{
+                    id: "numBiz",
                     position: "left",
-                    title: "Number of Businesses"
+                    title: "Number of Businesses",
+                }, {
+                    id: "percBiz",
+                    position: "right",
+                    title: "Percent of Businesses",
+                    "unit": "%"
                 }],
                 graphs: [{
+                    valueAxis: "numBiz",
                     type: "column",
                     title: "# of Businesses",
                     valueField: "count",
-                    fillAlphas: 1,
+                    balloonText: "District [[category]]:<br><b><span style='font-size:14px;'>[[value]]</span></b>",
+                    fillAlphas: 1
+                }, {
+                    valueAxis: "percBiz",
+                    type: "column",
+                    title: "% of Businesses",
+                    valueField: "percent",
+                    balloonText: "District [[category]]:<br><b><span style='font-size:14px;'>[[value]]%</span></b>",
+                    fillAlphas: 1
                 }]
             }
         }, 1000)
@@ -92,12 +115,24 @@
             angular.forEach($scope.businessByIndustry, function(business) {
                 business.count = parseFloat(business.count);
             });
+
+            $scope.businessByIndustry_forChart = [];
+
+            //This will convert all numeric strings to numbers
+            angular.forEach(data, function(business) {
+                if (business.industry) {
+                    //business.industry = parseFloat(business.supervisor_district);
+                    business.count = parseFloat(business.count);
+                    business.percent = ((business.count / $scope.totalBusinesses) * 100).toFixed(2);
+                    $scope.businessByIndustry_forChart.push(business);
+                }
+            });
         };
 
         $scope.dataFromBizByIndustryPromise = function() {
             var deferred = $q.defer();
 
-            var data = $scope.businessByIndustry;
+            var data = $scope.businessByIndustry_forChart;
 
             deferred.resolve(data)
             return deferred.promise;
@@ -128,13 +163,28 @@
                     labelFrequency: 1
                 },
                 valueAxes: [{
+                    id: "numBiz",
                     position: "left",
                     title: "Number of Businesses"
+                }, {
+                    id: "percBiz",
+                    position: "right",
+                    title: "Percent of Businesses",
+                    "unit": "%"
                 }],
                 graphs: [{
+                    valueAxis: "numBiz",
                     type: "column",
                     title: "# of Businesses",
                     valueField: "count",
+                    balloonText: "[[category]]:<br><b><span style='font-size:14px;'>[[value]]</span></b>",
+                    fillAlphas: 1,
+                }, {
+                    valueAxis: "percBiz",
+                    type: "column",
+                    title: "% of Businesses",
+                    valueField: "percent",
+                    balloonText: "[[category]]:<br><b><span style='font-size:14px;'>[[value]]%</span></b>",
                     fillAlphas: 1,
                 }]
             }
@@ -155,7 +205,7 @@
                         continue;
                     }
                     for (var close_key in businessesClosedByYear) {
-                        if (businessesClosedByYear[close_key].year === currYear+"-01-01T00:00:00.000") {
+                        if (businessesClosedByYear[close_key].year === currYear + "-01-01T00:00:00.000") {
                             var obj = {};
                             obj.year = currYear;
                             obj.openedBusinesses = businessesOpenedByYear[key].count;
@@ -244,11 +294,13 @@
                     type: "column",
                     title: "New Businesses",
                     valueField: "openedBusinesses",
+                    balloonText: "Opened in [[category]]:<br><b><span style='font-size:14px;'>[[value]]</span></b>",
                     fillAlphas: 1,
                 }, {
                     type: "column",
                     title: "Closed Businesses",
                     valueField: "closedBusinesses",
+                    balloonText: "Closed in [[category]]:<br><b><span style='font-size:14px;'>[[value]]</span></b>",
                     fillAlphas: 1,
                 }]
             }

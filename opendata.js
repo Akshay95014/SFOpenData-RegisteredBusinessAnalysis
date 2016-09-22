@@ -3,6 +3,7 @@
     var opendata = function($http, $log) {
 
         var appKey = "&$$app_token=Uw0ptivuIBN9JgGZLQtFZJ2In";
+        var yearConstraint = "location_start_date%20>%20'1969-12-31T11:59:59'"
 
         var getLocationCityData = function(city) {
             return $http.get("https://data.sfgov.org/resource/vbiu-2p9h.json?city=" + city + "&$$app_token=Uw0ptivuIBN9JgGZLQtFZJ2In")
@@ -12,7 +13,10 @@
         };
 
         var businessesByDistrict = function() {
-            var queryString = "?$select=supervisor_district,%20count(*)&$group=supervisor_district";
+            var queryString = "?$select=supervisor_district,%20count(*)";
+            queryString += "&$where=" + yearConstraint;
+            queryString += "&$group=supervisor_district";
+            $log.debug("QueryString = "  + queryString);
             return $http.get("https://data.sfgov.org/resource/vbiu-2p9h.json" + queryString + appKey)
                 .then(function(response) {
                     return response.data;
@@ -22,7 +26,9 @@
 
 
         var businessesByIndustry = function() {
-            var queryString = "?$select=naic_code_description as industry,%20count(*)&$group=naic_code_description";
+            var queryString = "?$select=naic_code_description as industry,%20count(*)";
+            queryString += "&$where=" + yearConstraint;
+            queryString += "&$group=naic_code_description";
             return $http.get("https://data.sfgov.org/resource/vbiu-2p9h.json" + queryString + appKey)
                 .then(function(response) {
                     return response.data;
@@ -30,7 +36,9 @@
         };
 
         var businessesByStartYear = function() {
-            var queryString = "?$select=date_trunc_y(location_start_date)%20as%20year,%20count(*)&$group=date_trunc_y(location_start_date)";
+            var queryString = "?$select=date_trunc_y(location_start_date)%20as%20year,%20count(*)"
+            queryString += "&$where=" + yearConstraint;
+            queryString += "&$group=date_trunc_y(location_start_date)";
             return $http.get("https://data.sfgov.org/resource/vbiu-2p9h.json" + queryString + appKey)
                 .then(function(response) {
                     return response.data;
@@ -38,7 +46,9 @@
         };
 
         var businessesByEndYear = function() {
-            var queryString = "?$select=date_trunc_y(location_end_date)%20as%20year,%20count(*)&$group=date_trunc_y(location_end_date)";
+            var queryString = "?$select=date_trunc_y(location_end_date)%20as%20year,%20count(*)";
+            queryString += "&$where=" + yearConstraint;
+            queryString += "&$group=date_trunc_y(location_end_date)";
             return $http.get("https://data.sfgov.org/resource/vbiu-2p9h.json" + queryString + appKey)
                 .then(function(response) {
                     return response.data;
@@ -46,15 +56,19 @@
         };
 
         var businessesByNeighborhood = function(district) {
-            var queryString = "?$select=neighborhoods_analysis_boundaries as neighborhood,%20count(*)&$where=supervisor_district='" + district + "'&$group=neighborhoods_analysis_boundaries"
+            var queryString = "?$select=neighborhoods_analysis_boundaries as neighborhood,%20count(*)";
+            queryString += "&$where=supervisor_district='" + district + "'";
+            queryString += "&$group=neighborhoods_analysis_boundaries";
             return $http.get("https://data.sfgov.org/resource/vbiu-2p9h.json" + queryString + appKey)
                 .then(function(response) {
                     return response.data;
                 });
-        }
+        };
 
         var businessesByIndustryInDistrict = function(district) {
-            var queryString = "?$select=naic_code_description as industry,%20count(*)&$where=supervisor_district='" + district + "'&$group=naic_code_description";
+            var queryString = "?$select=naic_code_description as industry,%20count(*)";
+            queryString += "&$where=supervisor_district='" + district + "'";
+            queryString += "&$group=naic_code_description";
             return $http.get("https://data.sfgov.org/resource/vbiu-2p9h.json" + queryString + appKey)
                 .then(function(response) {
                     return response.data;
@@ -63,7 +77,9 @@
 
 
         var inactiveBusinessesByDistrict = function() {
-            var queryString = "?$select=supervisor_district, count(*)&$where=location_end_date%20between%20%271800-01-01T00:00:00%27%20and%20%272059-12-31T11:59:59%27&$group=supervisor_district";
+            var queryString = "?$select=supervisor_district, count(*)"
+            queryString += "&$where=location_end_date%20between%20%271800-01-01T00:00:00%27%20and%20%272059-12-31T11:59:59%27";
+            queryString += "&$group=supervisor_district";
             return $http.get("https://data.sfgov.org/resource/vbiu-2p9h.json" + queryString + appKey)
                 .then(function(response) {
                     return response.data;
@@ -71,7 +87,9 @@
         };
 
         var inactiveBusinessesByIndustry = function() {
-            var queryString = "?$select=naic_code_description as industry, count(*)&$where=location_end_date%20between%20%271800-01-01T00:00:00%27%20and%20%272059-12-31T11:59:59%27&$group=naic_code_description";
+            var queryString = "?$select=naic_code_description as industry, count(*)";
+            queryString += "&$where=location_end_date%20between%20%271800-01-01T00:00:00%27%20and%20%272059-12-31T11:59:59%27";
+            queryString += "&$group=naic_code_description";
             return $http.get("https://data.sfgov.org/resource/vbiu-2p9h.json" + queryString + appKey)
                 .then(function(response) {
                     return response.data;
@@ -80,7 +98,8 @@
 
         // This function will return the # of active businesses in a given year.
         var activeBusinessesUpToYear = function(year) {
-            var queryString = "?$select=count(*)&$where=location_start_date%20between%20%271800-01-01T00:00:00%27%20and%20%27" + year + "-12-31T11:59:59%27";
+            var queryString = "?$select=count(*)";
+            queryString += "&$where=location_start_date%20between%20%271800-01-01T00:00:00%27%20and%20%27" + year + "-12-31T11:59:59%27";
             return $http.get("https://data.sfgov.org/resource/vbiu-2p9h.json" + queryString + appKey)
                 .then(function(response) {
                     var bufferData = response.data;
@@ -107,7 +126,8 @@
 
         // MAY NOT END UP NEEDING THIS
         var inactiveBusinessesUpToYear = function(year) {
-            var queryString = "?$select=count(*)&$where=location_end_date%20between%20%271800-01-01T00:00:00%27%20and%20%27" + year + "-12-31T11:59:59%27";
+            var queryString = "?$select=count(*)";
+            queryString += "&$where=location_end_date%20between%20%271800-01-01T00:00:00%27%20and%20%27" + year + "-12-31T11:59:59%27";
             return $http.get("https://data.sfgov.org/resource/vbiu-2p9h.json" + queryString + appKey)
                 .then(function(response) {
                     return response.data;
@@ -116,6 +136,7 @@
 
         var getAllYears = function() {
             var queryString = "?$select=date_trunc_y(location_start_date) as year &$group=date_trunc_y(location_start_date)";
+            queryString += "&$where=" + yearConstraint;
             return $http.get("https://data.sfgov.org/resource/vbiu-2p9h.json" + queryString + appKey)
                 .then(function(response) {
                     return response.data;

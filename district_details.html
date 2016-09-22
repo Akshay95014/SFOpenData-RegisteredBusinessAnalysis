@@ -3,6 +3,7 @@
 </div>
 
 
+<am-chart id="businessesByNeighborhoodChart" options="businessesByNeighborhoodChart" height="500px" width="700px"></am-chart>
 
 <div ng-show="neighborhoodBusinesses">
     <h2>Businesses by Neighborhood</h2>
@@ -15,12 +16,15 @@
         </thead>
         <tbody>
             <tr ng-repeat="entry in neighborhoodBusinesses">
-                <td>{{entry.neighborhood}}</td>
+                <td ng-show="entry.neighborhood">{{entry.neighborhood}}</td>
+                <td ng-hide="entry.neighborhood">Unlabelled</td>
                 <td>{{entry.count}}</td>
             </tr>
         </tbody>
     </table>
 </div>
+
+<am-chart id="businessesByIndustryChart" options="businessesByIndustryChart" height="500px" width="700px"></am-chart>
 
 <div ng-show="industryBusinesses">
     <h2>Businesses by Industry</h2>
