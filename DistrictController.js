@@ -4,6 +4,7 @@
 
   var DistrictController = function($scope, opendata, $routeParams, $timeout, $q) {
 
+    //This function saves all businesses by neighborhood into the scope.
     var onBizByNeighborhood = function(data){
       $scope.neighborhoodBusinesses = data;
 
