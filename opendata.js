@@ -1,6 +1,6 @@
 (function() {
 
-    var opendata = function($http) {
+    var opendata = function($http, $log) {
 
         var appKey = "&$$app_token=Uw0ptivuIBN9JgGZLQtFZJ2In";
 
@@ -19,8 +19,10 @@
                 });
         };
 
+
+
         var businessesByIndustry = function() {
-            var queryString = "?$select=naic_code_description,%20count(*)&$group=naic_code_description";
+            var queryString = "?$select=naic_code_description as industry,%20count(*)&$group=naic_code_description";
             return $http.get("https://data.sfgov.org/resource/vbiu-2p9h.json" + queryString + appKey)
                 .then(function(response) {
                     return response.data;
@@ -28,7 +30,7 @@
         };
 
         var businessesByStartYear = function() {
-            var queryString = "?$select=date_trunc_y(dba_start_date)%20as%20year,%20count(*)&$group=date_trunc_y(dba_start_date)";
+            var queryString = "?$select=date_trunc_y(location_start_date)%20as%20year,%20count(*)&$group=date_trunc_y(location_start_date)";
             return $http.get("https://data.sfgov.org/resource/vbiu-2p9h.json" + queryString + appKey)
                 .then(function(response) {
                     return response.data;
@@ -36,7 +38,7 @@
         };
 
         var businessesByEndYear = function() {
-            var queryString = "?$select=date_trunc_y(dba_end_date)%20as%20year,%20count(*)&$group=date_trunc_y(dba_end_date)";
+            var queryString = "?$select=date_trunc_y(location_end_date)%20as%20year,%20count(*)&$group=date_trunc_y(location_end_date)";
             return $http.get("https://data.sfgov.org/resource/vbiu-2p9h.json" + queryString + appKey)
                 .then(function(response) {
                     return response.data;
@@ -60,6 +62,143 @@
         };
 
 
+        var inactiveBusinessesByDistrict = function() {
+            var queryString = "?$select=supervisor_district, count(*)&$where=location_end_date%20between%20%271800-01-01T00:00:00%27%20and%20%272059-12-31T11:59:59%27&$group=supervisor_district";
+            return $http.get("https://data.sfgov.org/resource/vbiu-2p9h.json" + queryString + appKey)
+                .then(function(response) {
+                    return response.data;
+                });
+        };
+
+        var inactiveBusinessesByIndustry = function() {
+            var queryString = "?$select=naic_code_description as industry, count(*)&$where=location_end_date%20between%20%271800-01-01T00:00:00%27%20and%20%272059-12-31T11:59:59%27&$group=naic_code_description";
+            return $http.get("https://data.sfgov.org/resource/vbiu-2p9h.json" + queryString + appKey)
+                .then(function(response) {
+                    return response.data;
+                });
+        };
+
+        // This function will return the # of active businesses in a given year.
+        var activeBusinessesUpToYear = function(year) {
+            var queryString = "?$select=count(*)&$where=location_start_date%20between%20%271800-01-01T00:00:00%27%20and%20%27" + year + "-12-31T11:59:59%27";
+            return $http.get("https://data.sfgov.org/resource/vbiu-2p9h.json" + queryString + appKey)
+                .then(function(response) {
+                    var bufferData = response.data;
+
+                    var totalNumBusinesses = bufferData[0].count;
+
+                    return inactiveBusinessesUpToYear(year)
+                        .then(function(inactive) {
+                            totalNumBusinesses -= inactive[0].count;
+                            return totalNumBusinesses;
+                        });
+
+                    // var responseData = [];
+                    // for (var index in bufferData) {
+                    //     if (bufferData[index].location_end_date) {
+                    //         console.log("FOUND AN END DATE!");
+                    //     } else {
+                    //         responseData.push(bufferData[index]);
+                    //     }
+                    // }
+                    // return responseData;
+                });
+        };
+
+        // MAY NOT END UP NEEDING THIS
+        var inactiveBusinessesUpToYear = function(year) {
+            var queryString = "?$select=count(*)&$where=location_end_date%20between%20%271800-01-01T00:00:00%27%20and%20%27" + year + "-12-31T11:59:59%27";
+            return $http.get("https://data.sfgov.org/resource/vbiu-2p9h.json" + queryString + appKey)
+                .then(function(response) {
+                    return response.data;
+                });
+        };
+
+        var getAllYears = function() {
+            var queryString = "?$select=date_trunc_y(location_start_date) as year &$group=date_trunc_y(location_start_date)";
+            return $http.get("https://data.sfgov.org/resource/vbiu-2p9h.json" + queryString + appKey)
+                .then(function(response) {
+                    return response.data;
+                });
+        }
+
+        // var addToYearlyActiveBusinesses = function(yearlyActiveBusinesses, busInfo, year){
+        //   var obj = {};
+        //   obj.year = years[index].year;
+        //   $log.debug("busInfo = " + busInfo);
+        //   obj.activeBusinesses = busInfo;
+        //   yearlyActiveBusinesses.push(obj);
+        // }
+        //
+        // var activeBusinessesByYear = function() {
+        //
+        //     var yearlyActiveBusinesses = [];
+        //
+        //     return getAllYears().then(function(allYears) {
+        //         var years = allYears;
+        //         $log.debug("Years.length = " + years.length);
+        //         for (var index in years) {
+        //             if (years[index].year === "2201-01-01T00:00:00.000") { //Found a typo or a test entry in the dataset
+        //                 continue;
+        //             }
+        //             var yearStr = years[index].year;
+        //             $log.debug("yearStr = " + yearStr);
+        //             var yearArr = yearStr.split("-");
+        //             yearStr = yearArr[0];
+        //             $log.debug("yearStr = " + yearStr);
+        //
+        //             activeBusinessesUpToYear(yearStr).then(addToYearlyActiveOrdersfunction(yearlyActiveBusinesses, busInfo, years[index].year) {
+        //                 $log.debug("INside activeBusinessesUPtohyear");
+        //                 var obj = {};
+        //                 obj.year = years[index].year;
+        //                 $log.debug("busInfo = " + busInfo);
+        //                 obj.activeBusinesses = busInfo;
+        //                 yearlyActiveBusinesses.push(obj);
+        //                 $log.debug("yaerlyActiveBusinesses.length = " + yearlyActiveBusinesses.length);
+        //             });
+        //         }
+        //         $log.debug("yaerlyActiveBusinesses.length = " + yearlyActiveBusinesses.length);
+        //         return yearlyActiveBusinesses;
+        //     });
+        // };
+
+        var activeBusinessesByDistrict = function() {
+            return inactiveBusinessesByDistrict().then(function(inactiveBusinesses) {
+                var closedBusinessesByDistrict = inactiveBusinesses;
+                return businessesByDistrict().then(function(activeAndInactiveInDistrics) {
+                    var allBusinessesByDistrict = activeAndInactiveInDistrics;
+                    for (var index in allBusinessesByDistrict) {
+                        var districtNum = allBusinessesByDistrict[index].supervisor_district;
+                        for (var index_closed in closedBusinessesByDistrict) {
+                            if (closedBusinessesByDistrict[index_closed].supervisor_district === districtNum) {
+                                allBusinessesByDistrict[index].count -= closedBusinessesByDistrict[index_closed].count;
+                            }
+                        } // Close the closedBusinessesByDistrict for-loop
+                    } // Close the allBusinessesByDistrict for-loop
+                    return allBusinessesByDistrict;
+                });
+            });
+        };
+
+        var activeBusinessesByIndustry = function() {
+            return inactiveBusinessesByIndustry().then(function(inactiveBusinesses) {
+                var closedBusinessesByIndustry = inactiveBusinesses;
+                return businessesByIndustry().then(function(activeAndInactiveInIndustry) {
+                    var allBusinessesByIndustry = activeAndInactiveInIndustry;
+                    for (var index in allBusinessesByIndustry) {
+                        var industryName = allBusinessesByIndustry[index].industry;
+                        for (var index_closed in closedBusinessesByIndustry) {
+                            if (closedBusinessesByIndustry[index_closed].industry === industryName) {
+                                allBusinessesByIndustry[index].count -= closedBusinessesByIndustry[index_closed].count;
+                            }
+                        } // Close the closedBusinessesByDistrict for-loop
+                    } // Close the allBusinessesByDistrict for-loop
+                    return allBusinessesByIndustry;
+                });
+            });
+        };
+
+
         return {
             getLocationCityData: getLocationCityData,
             businessesByDistrict: businessesByDistrict,
@@ -67,7 +206,10 @@
             businessesByStartYear: businessesByStartYear,
             businessesByEndYear: businessesByEndYear,
             businessesByNeighborhood: businessesByNeighborhood,
-            businessesByIndustryInDistrict: businessesByIndustryInDistrict
+            businessesByIndustryInDistrict: businessesByIndustryInDistrict,
+            //activeBusinessesByYear: activeBusinessesByYear,
+            activeBusinessesByDistrict: activeBusinessesByDistrict,
+            activeBusinessesByIndustry: activeBusinessesByIndustry
         };
 
     };

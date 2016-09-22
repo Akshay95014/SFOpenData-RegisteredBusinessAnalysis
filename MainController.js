@@ -5,7 +5,6 @@
     var MainController = function($scope, $log, $location, opendata) {
 
         var onGotData = function(data) {
-            $log.debug(data);
             $scope.queryData = data;
         };
 
@@ -14,7 +13,6 @@
         }
 
         var getBusinessesByCity = function(city) {
-            $log.debug("Made it into controller's getBusinessesByCity function.");
             opendata.getLocationCityData(city).then(onGotData, onError);
         };
 
@@ -41,43 +39,70 @@
             var businessesOpenedByYear = data;
             $scope.businessesByYear = [];
 
-            opendata.businessesByEndYear().then(function(close_data){
-              var businessesClosedByYear = close_data;
-              for (var key in businessesOpenedByYear){
-                var currYear = (businessesOpenedByYear[key].year);
-                var foundMatch = false;
-                for (var close_key in businessesClosedByYear){
-                  if(businessesClosedByYear[close_key].year === currYear){
-                    $log.debug("MADE IT INTO THE IF STATEMENT!")
-                    var obj = {};
-                    obj.year = currYear;
-                    obj.openedBusinesses = businessesOpenedByYear[key].count;
-                    obj.closedBusinesses = businessesClosedByYear[close_key].count;
-                    $scope.businessesByYear.push(obj);
-                    foundMatch = true;
-                    break;
+            opendata.businessesByEndYear().then(function(close_data) {
+                var businessesClosedByYear = close_data;
+                for (var key in businessesOpenedByYear) {
+                    var currYear = (businessesOpenedByYear[key].year);
+                    var foundMatch = false;
+                    if (currYear === "2201-01-01T00:00:00.000") {
+                        continue;
+                    }
+                    for (var close_key in businessesClosedByYear) {
+                        if (businessesClosedByYear[close_key].year === currYear) {
+                            var obj = {};
+                            obj.year = currYear;
+                            obj.openedBusinesses = businessesOpenedByYear[key].count;
+                            obj.closedBusinesses = businessesClosedByYear[close_key].count;
+                            $scope.businessesByYear.push(obj);
+                            foundMatch = true;
+                            break;
+                        }
+                    }
+                    if (!foundMatch) {
+                        var obj = {};
+                        obj.year = currYear;
+                        obj.openedBusinesses = businessesOpenedByYear[key].count;
+                        obj.closedBusinesses = "-";
+                        $scope.businessesByYear.push(obj);
+                    }
+                }
+                //This will convert all numeric strings to numbers
+                // angular.forEach($scope.businessByYear, function(business) {
+                //     business.count = parseFloat(business.count);
+                // });
+            }, onError);
+            /*$log.debug("About to do the activebusinessesbyyear");
+            opendata.activeBusinessesByYear().then(function(activeBusinesses) {
+              for (var index in $scope.businessesByYear) {
+                var currYear = $scope.businessesByYear[index].year;
+                $log.debug("activeBusinesses = " + activeBusinesses.length);
+                for (var active_index in activeBusinesses) {
+                  $log.debug("CurrYear = " + currYear + ", and activeBusinesses = " + activeBusinesses[active_index].year);
+                  if (currYear === activeBusinesses[active_index].year) {
+                    $log.debug("Inside maincontroller. Active businesses = " + activeBusinesses[active_index].activeBusinesses);
+                    $scope.businessesByYear[index].activeBusinesses = activeBusinesses[active_index].activeBusinesses;
                   }
                 }
-                if (!foundMatch){
-                  var obj = {};
-                  obj.year = currYear;
-                  obj.openedBusinesses = businessesOpenedByYear[key].count;
-                  obj.closedBusinesses = "-";
-                  $scope.businessesByYear.push(obj);
-                }
               }
-              //This will convert all numeric strings to numbers
-              angular.forEach($scope.businessByYear, function(business) {
-                business.count = parseFloat(business.count);
-              });
-            }, onError);
-
+            }, onError);*/
         };
 
-        opendata.businessesByDistrict().then(onBizByDistrict, onError);
-        opendata.businessesByIndustry().then(onBizByIndustry, onError);
+
+        var onActiveBizByYear = function(data) {
+            $scope.activeBusinessesByYear = data;
+
+            //This will convert all numeric strings to numbers
+            // angular.forEach($scope.activeBusinessesByYear, function(business) {
+            //     business.activeBusinesses = parseFloat(business.activeBusinesses);
+            // });
+        };
+
+        //  opendata.businessesByDistrict().then(onBizByDistrict, onError);
+        opendata.activeBusinessesByDistrict().then(onBizByDistrict, onError);
+        opendata.activeBusinessesByIndustry().then(onBizByIndustry, onError);
         opendata.businessesByStartYear().then(onBizByYear, onError);
-      //  opendata.businessesByEndYear().then(onBizByYear, onError);
+        //opendata.activeBusinessesByYear().then(onActiveBizByYear, onError);
+        //  opendata.businessesByEndYear().then(onBizByYear, onError);
 
         $scope.getBusinessesByCity = getBusinessesByCity;
 

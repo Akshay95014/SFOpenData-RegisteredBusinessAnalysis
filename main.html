@@ -69,8 +69,8 @@
             </thead>
             <tbody>
                 <tr ng-repeat="bizByIndustry in businessByIndustry | orderBy: 'count'">
-                    <td ng-show="bizByIndustry.naic_code_description">{{bizByIndustry.naic_code_description}}</td>
-                    <td ng-hide="bizByIndustry.naic_code_description">Unlabelled</td>
+                    <td ng-show="bizByIndustry.industry">{{bizByIndustry.industry}}</td>
+                    <td ng-hide="bizByIndustry.industry">Unlabelled</td>
                     <td>{{bizByIndustry.count | number}}</td>
                 </tr>
             </tbody>
@@ -84,6 +84,7 @@
             <thead>
                 <tr>
                     <th>Year</th>
+                    <!-- <th>Number of Active Businesses</th> -->
                     <th>Number of Businesses Opened</th>
                     <th>Number of Businesses Closed</th>
                 </tr>
@@ -92,6 +93,7 @@
                 <tr ng-repeat="bizByYear in businessesByYear | orderBy: '-year'">
                     <td ng-show="bizByYear.year">{{bizByYear.year | date : 'yyyy'}}</td>
                     <td ng-hide="bizByYear.year">Unlabelled</td>
+                    <!-- <td>{{bizByYear.activeBusinesses | number}}</td> -->
                     <td>{{bizByYear.openedBusinesses | number}}</td>
                     <td>{{bizByYear.closedBusinesses | number}}</td>
                 </tr>
