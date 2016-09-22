@@ -1,6 +1,6 @@
 (function() {
 
-    var app = angular.module("registeredBusinessAnalysis", ["ngRoute", "ng-fusioncharts"]);
+    var app = angular.module("registeredBusinessAnalysis", ["ngRoute", "amChartsDirective"]);
 
     app.filter('capitalize', function() {
         return function(input) {
