@@ -20,9 +20,9 @@
 
     opendata.businessesByNeighborhood($scope.district_num).then(onBizByNeighborhood, onError);
     opendata.businessesByIndustryInDistrict($scope.district_num).then(onBizByIndustry, onError);
-    opendata.activeBusinessesByYear("2016").then(function(){
-      console.log("done!");
-    }, onError);
+    // opendata.activeBusinessesByYear("2016").then(function(){
+    //   console.log("done!");
+    // }, onError);
   };
 
   app.controller("DistrictController", DistrictController);

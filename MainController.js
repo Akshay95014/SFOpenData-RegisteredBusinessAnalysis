@@ -4,6 +4,15 @@
 
     var MainController = function($scope, $log, $location, opendata, $timeout, $q) {
 
+        function compare(a, b) {
+            if (a.year < b.year)
+                return -1;
+            if (a.year > b.year)
+                return 1;
+            return 0;
+        }
+
+
         var onGotData = function(data) {
             $scope.queryData = data;
         };
@@ -17,62 +26,21 @@
         };
 
         var onBizByDistrict = function(data) {
-            $scope.businessByDistrict = data;
 
 
             //This will convert all numeric strings to numbers
-            angular.forEach($scope.businessByDistrict, function(business) {
+            angular.forEach(data, function(business) {
                 if (business.supervisor_district)
                     business.supervisor_district = parseFloat(business.supervisor_district);
                 else {
-                    business.supervisor_district = 450;
+                    business.supervisor_district = "Unlabelled";
                 }
                 business.count = parseFloat(business.count);
             });
-
-            // $scope.amChartBusinessesByDistrict = {
-            //     data: [{
-            //         "supervisor_district": 4,
-            //         "count": 3
-            //     }],
-            //     "marginTop": 25,
-            //     type: "serial",
-            //     theme: "light",
-            //     titles: [{
-            //         "size": 15,
-            //         "text": "Active Businesses by District"
-            //     }],
-            //     rotate: false,
-            //     categoryField: "supervisor_district",
-            //     categoryAxis: {
-            //         gridPosition: "start",
-            //         parseDates: false,
-            //         labelRotation: 45
-            //     },
-            //     chartScrollbar: {
-            //         enabled: true,
-            //     },
-            //     valueAxes: [{
-            //         position: "left",
-            //         title: "Number"
-            //     }],
-            //     graphs: [{
-            //         type: "column",
-            //         fillAlphas: 1,
-            //         title: "Active",
-            //         valueField: "count",
-            //     }],
-            //     export: {
-            //         enabled: true,
-            //     },
-            // };
-
-            // $log.debug($scope.businessByDistrict);
-            // $scope.$broadcast('amCharts.renderChart', $scope.businessByDistrict, 'businessesByDistrictChart');
-            //$scope.showCharts = true;
+            $scope.businessByDistrict = data;
         };
 
-        $scope.dataFromPromise = function() {
+        $scope.dataFromBizByDistPromise = function() {
             var deferred = $q.defer();
 
             var data = $scope.businessByDistrict;
@@ -82,16 +50,16 @@
         };
 
 
-        $scope.amChartOptions = $timeout(function() {
+        $scope.businessesByDistrictChart = $timeout(function() {
             return {
                 // we can also use a promise for the data property to delay the rendering of
                 // the chart till we actually have data
-                data: $scope.dataFromPromise(),
+                data: $scope.dataFromBizByDistPromise(),
                 type: "serial",
-                theme: 'black',
+                theme: 'light',
                 categoryField: "supervisor_district",
-                rotate: true,
-                pathToImages: 'https://cdnjs.cloudflare.com/ajax/libs/amcharts/3.13.0/images/',
+                rotate: false,
+                // pathToImages: 'https://cdnjs.cloudflare.com/ajax/libs/amcharts/3.13.0/images/',
                 legend: {
                     enabled: true
                 },
@@ -100,15 +68,17 @@
                 },
                 categoryAxis: {
                     gridPosition: "start",
-                    parseDates: false
+                    parseDates: false,
+                    minHorizontalGap: 0,
+                    labelRotation: 45
                 },
                 valueAxes: [{
-                    position: "top",
-                    title: "Million USD"
+                    position: "left",
+                    title: "Number of Businesses"
                 }],
                 graphs: [{
                     type: "column",
-                    title: "Income",
+                    title: "# of Businesses",
                     valueField: "count",
                     fillAlphas: 1,
                 }]
@@ -124,6 +94,52 @@
             });
         };
 
+        $scope.dataFromBizByIndustryPromise = function() {
+            var deferred = $q.defer();
+
+            var data = $scope.businessByIndustry;
+
+            deferred.resolve(data)
+            return deferred.promise;
+        };
+
+
+        $scope.businessesByIndustryChart = $timeout(function() {
+            return {
+                // we can also use a promise for the data property to delay the rendering of
+                // the chart till we actually have data
+                data: $scope.dataFromBizByIndustryPromise(),
+                type: "serial",
+                theme: 'light',
+                categoryField: "industry",
+                rotate: false,
+                // pathToImages: 'https://cdnjs.cloudflare.com/ajax/libs/amcharts/3.13.0/images/',
+                legend: {
+                    enabled: true
+                },
+                chartScrollbar: {
+                    enabled: true,
+                },
+                categoryAxis: {
+                    gridPosition: "start",
+                    parseDates: false,
+                    minHorizontalGap: 0,
+                    labelRotation: 45,
+                    labelFrequency: 1
+                },
+                valueAxes: [{
+                    position: "left",
+                    title: "Number of Businesses"
+                }],
+                graphs: [{
+                    type: "column",
+                    title: "# of Businesses",
+                    valueField: "count",
+                    fillAlphas: 1,
+                }]
+            }
+        }, 1000)
+
         var onBizByYear = function(data) {
             var businessesOpenedByYear = data;
             $scope.businessesByYear = [];
@@ -132,12 +148,14 @@
                 var businessesClosedByYear = close_data;
                 for (var key in businessesOpenedByYear) {
                     var currYear = (businessesOpenedByYear[key].year);
+                    var yearArr = currYear.split("-");
+                    currYear = yearArr[0];
                     var foundMatch = false;
-                    if (currYear === "2201-01-01T00:00:00.000") {
+                    if (currYear === "2201") {
                         continue;
                     }
                     for (var close_key in businessesClosedByYear) {
-                        if (businessesClosedByYear[close_key].year === currYear) {
+                        if (businessesClosedByYear[close_key].year === currYear+"-01-01T00:00:00.000") {
                             var obj = {};
                             obj.year = currYear;
                             obj.openedBusinesses = businessesOpenedByYear[key].count;
@@ -155,6 +173,7 @@
                         $scope.businessesByYear.push(obj);
                     }
                 }
+                $scope.businessesByYear.sort(compare);
                 //This will convert all numeric strings to numbers
                 // angular.forEach($scope.businessByYear, function(business) {
                 //     business.count = parseFloat(business.count);
@@ -186,6 +205,55 @@
             // });
         };
 
+        $scope.dataFromBizByYearPromise = function() {
+            var deferred = $q.defer();
+
+            var data = $scope.businessesByYear;
+
+            deferred.resolve(data)
+            return deferred.promise;
+        };
+
+
+        $scope.businessesByYearChart = $timeout(function() {
+            return {
+                // we can also use a promise for the data property to delay the rendering of
+                // the chart till we actually have data
+                data: $scope.dataFromBizByYearPromise(),
+                type: "serial",
+                theme: 'light',
+                categoryField: "year",
+                rotate: false,
+                // pathToImages: 'https://cdnjs.cloudflare.com/ajax/libs/amcharts/3.13.0/images/',
+                legend: {
+                    enabled: true
+                },
+                chartScrollbar: {
+                    enabled: true,
+                },
+                categoryAxis: {
+                    gridPosition: "start",
+                    parseDates: false,
+                    labelRotation: 45
+                },
+                valueAxes: [{
+                    position: "left",
+                    title: "Number of Businesses"
+                }],
+                graphs: [{
+                    type: "column",
+                    title: "New Businesses",
+                    valueField: "openedBusinesses",
+                    fillAlphas: 1,
+                }, {
+                    type: "column",
+                    title: "Closed Businesses",
+                    valueField: "closedBusinesses",
+                    fillAlphas: 1,
+                }]
+            }
+        }, 1000)
+
         //  opendata.businessesByDistrict().then(onBizByDistrict, onError);
         opendata.activeBusinessesByDistrict().then(onBizByDistrict, onError);
         opendata.activeBusinessesByIndustry().then(onBizByIndustry, onError);
@@ -194,60 +262,7 @@
         //  opendata.businessesByEndYear().then(onBizByYear, onError);
 
         $scope.getBusinessesByCity = getBusinessesByCity;
-        $scope.onBizByIndustry = onBizByIndustry;
 
-
-        // $scope.amChartOptions = {
-        //     data: [{
-        //         year: 2005,
-        //         income: 23.5,
-        //         expenses: 18.1
-        //     }, {
-        //         year: 2006,
-        //         income: 26.2,
-        //         expenses: 22.8
-        //     }, {
-        //         year: 2007,
-        //         income: 30.1,
-        //         expenses: 23.9
-        //     }, {
-        //         year: 2008,
-        //         income: 29.5,
-        //         expenses: 25.1
-        //     }, {
-        //         year: 2009,
-        //         income: 24.6,
-        //         expenses: 25
-        //     }],
-        //     type: "serial",
-        //
-        //     categoryField: "year",
-        //     rotate: false,
-        //     pathToImages: 'https://cdnjs.cloudflare.com/ajax/libs/amcharts/3.13.0/images/',
-        //     legend: {
-        //         enabled: true
-        //     },
-        //     chartScrollbar: {
-        //         enabled: false,
-        //     },
-        //     categoryAxis: {
-        //         gridPosition: "start",
-        //         parseDates: false
-        //     },
-        //     valueAxes: [{
-        //         position: "bottom",
-        //         title: "Million USD"
-        //     }],
-        //     graphs: [{
-        //         type: "column",
-        //         title: "Income",
-        //         valueField: "income",
-        //         fillAlphas: 1,
-        //     }]
-        // };
-
-        //*****AMCHARTS*****//
-        //amCharts Weekly Orders
 
     };
 
