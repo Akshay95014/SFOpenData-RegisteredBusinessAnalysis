@@ -1,6 +1,6 @@
-<div>
+<div class="container">
     <h3>Details for Supervisory District {{district_num}}</h3>
-</div>
+
 
 <div class="row">
 
@@ -9,7 +9,7 @@
         <div id="wrapper" style="text-align: center">
             <div id="activeByNeighborhood" style="display: inline-block;">
                 <h4>Businesses by Neighborhood</h4>
-                <am-chart id="businessesByNeighborhoodChart" options="businessesByNeighborhoodChart" height="500px" width="700px"></am-chart>
+                <am-chart id="businessesByNeighborhoodChart" options="businessesByNeighborhoodChart" height="500px" width="500px"></am-chart>
             </div>
         </div>
         <div ng-show="neighborhoodBusinesses" style="text-align: center">
@@ -39,7 +39,7 @@
         <div id="wrapper2" style="text-align: center">
             <div id="activeByIndustry" style="display: inline-block;">
                 <h4>Businesses by Industry</h4>
-                <am-chart id="businessesByIndustryChart" options="businessesByIndustryChart" height="500px" width="700px"></am-chart>
+                <am-chart id="businessesByIndustryChart" options="businessesByIndustryChart" height="500px" width="500px"></am-chart>
             </div>
         </div>
         <div ng-show="industryBusinesses" style="text-align: center">
@@ -64,5 +64,6 @@
     </div>
 </div>
 
+</div>
 <!-- Button for going back to data analysis -->
 <a href="#/main" class="btn btn-primary btn-lg btn-block" role="button" aria-pressed="true"> Go back to main page </a>
