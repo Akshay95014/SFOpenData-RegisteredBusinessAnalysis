@@ -26,6 +26,13 @@
                 });
         };
 
+        var getBusinessNameData = function(name) {
+            return $http.get("https://data.sfgov.org/resource/vbiu-2p9h.json?$where=dba_name like '%25" + name + "%25'&$$app_token=Uw0ptivuIBN9JgGZLQtFZJ2In")
+                .then(function(response) {
+                    return response.data;
+                });
+        };
+
         var getBusinessesForMap = function(){
           var queryString = "?$select=dba_name, location";
           queryString += "&$where=" + twentyOneYearConstraint;
@@ -257,7 +264,8 @@
             activeBusinessesByDistrict: activeBusinessesByDistrict,
             activeBusinessesByIndustry: activeBusinessesByIndustry,
             getBusinessesForMap: getBusinessesForMap,
-            newBusinessesByDistrictOverTime: newBusinessesByDistrictOverTime
+            newBusinessesByDistrictOverTime: newBusinessesByDistrictOverTime,
+            getBusinessNameData: getBusinessNameData
         };
 
     };

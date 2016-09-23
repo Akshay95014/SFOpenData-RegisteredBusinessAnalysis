@@ -19,8 +19,13 @@
           opendata.getLocationCityData(city).then(onGotData, onError);
       };
 
+      var getBusinessesByName = function(name) {
+          opendata.getBusinessNameData(name).then(onGotData, onError);
+      };
+
       // Make the function available outside the controller
       $scope.getBusinessesByCity = getBusinessesByCity;
+      $scope.getBusinessesByName = getBusinessesByName;
 
     };
 

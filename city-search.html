@@ -1,31 +1,44 @@
-<h3>City-Search for Businesses</h3>
+<div class="container">
+    <h3>City-Search for Businesses</h3>
 
-<!-- Find business records based on location_city -->
-Find businesses based on location city
-<form name="searchByLocationCity" ng-submit="getBusinessesByCity(location_city)">
-    <input type="search" required="" placeholder="Ex: Cupertino or Boston" ng-model="location_city" />
-    <input type="submit" value="Search" />
-</form>
+    <!-- Find business records based on location_city -->
+    <div class="row">
+        <div class="col-lg-5">
+            Find businesses based on location city
+            <form name="searchByLocationCity" ng-submit="getBusinessesByCity(location_city)">
+                <input type="search" class="form-control" required="" placeholder="Ex: Cupertino or Boston" ng-model="location_city" />
+                <input type="submit" class="btn btn-outline-primary" value="Search" />
+            </form>
+        </div>
+        <div class="col-lg-5">
+            Find businesses based on fuzzy-matching of name (Case Sensitive)
+            <form name="searchByName" ng-submit="getBusinessesByName(name)">
+                <input type="search" class="form-control" required="" placeholder="Ex: Radioshack" ng-model="name" />
+                <input type="submit" class="btn btn-outline-primary" value="Search" />
+            </form>
+        </div>
+    </div>
 
-<!-- Resulting table for Business Results by City Search -->
-<div ng-show="queryData">
-    <h2>Business Results</h2>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Business Name</th>
-                <th>Business Location</th>
-                <th>Business Start Date</th>
-                <th>Business End Date</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr ng-repeat="entry in queryData">
-                <td>{{entry.dba_name}}</td>
-                <td>{{entry.location_city | capitalize}} <span ng-show="entry.location_city">, </span>{{entry.location_state | uppercase}}</td>
-                <td>{{entry.dba_start_date | date : longDate}}</td>
-                <td>{{entry.dba_end_date | date : longDate}}</td>
-            </tr>
-        </tbody>
-    </table>
+    <!-- Resulting table for Business Results by City Search -->
+    <div ng-show="queryData">
+        <h2>Business Results</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Business Name</th>
+                    <th>Business Location</th>
+                    <th>Business Start Date</th>
+                    <th>Business End Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="entry in queryData">
+                    <td>{{entry.dba_name}}</td>
+                    <td>{{entry.location_city | capitalize}} <span ng-show="entry.location_city">, </span>{{entry.location_state | uppercase}}</td>
+                    <td>{{entry.dba_start_date | date : longDate}}</td>
+                    <td>{{entry.dba_end_date | date : longDate}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
