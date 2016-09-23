@@ -11,4 +11,6 @@ This web application has been developed to aid in the visualization of the datas
 4. Newly registered and closed business locations by year in SF
 5. and some more features!
 
-Finally, if you have some feedback and suggestions for the analyses shown here, please feel free to fill this form out: https://goo.gl/forms/8cY2EWUOloQ5HJJw2 
+This web application was created using AngularJS and API calls to the SF OpenData website. To launch the website locally, you must host the files on your machine, and navigate to your localhost as per your settings. 
+
+Finally, if you have some feedback and suggestions for the analyses shown here, please feel free to fill this form out: https://goo.gl/forms/8cY2EWUOloQ5HJJw2
