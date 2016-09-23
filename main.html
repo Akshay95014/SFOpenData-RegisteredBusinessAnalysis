@@ -1,111 +1,115 @@
-<div>
-    <h3>City-Search for Businesses</h3>
+<div class="row">
 
-    <!-- Find business records based on location_city -->
-    Find businesses based on location city
-    <form name="searchByLocationCity" ng-submit="getBusinessesByCity(location_city)">
-        <input type="search" required="" placeholder="Ex: Cupertino or Boston" ng-model="location_city" />
-        <input type="submit" value="Search" />
-    </form>
-
-
-    <!-- Print the error if there is one -->
     {{error}}
-    <!-- <div ng-if="businessByDistrict"> -->
-        <am-chart id="businessesByDistrictChart" options="businessesByDistrictChart" height="500px" width="500px"></am-chart>
-    <!-- </div> -->
-    <!-- Businesses from the requested city -->
-    <div ng-show="queryData">
-        <h2>Business Results</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Business Name</th>
-                    <th>Business Location</th>
-                    <th>Business Start Date</th>
-                    <th>Business End Date</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="entry in queryData">
-                    <td>{{entry.dba_name}}</td>
-                    <td>{{entry.location_city | capitalize}} <span ng-show="entry.location_city">, </span>{{entry.location_state | uppercase}}</td>
-                    <td>{{entry.dba_start_date | date : longDate}}</td>
-                    <td>{{entry.dba_end_date | date : longDate}}</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
 
-    <!-- # Businesses Per District -->
-    <div ng-show="businessByDistrict">
-        <h2>Business by District (Raw Data)</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Supervisory District</th>
-                    <th>Number of Businesses</th>
-                    <th>Details</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="bizByDist in businessByDistrict | orderBy: 'supervisor_district'">
-                    <td ng-show="bizByDist.supervisor_district">{{bizByDist.supervisor_district | number}}</td>
-                    <td ng-hide="bizByDist.supervisor_district">Unlabelled</td>
-                    <td>{{bizByDist.count | number}}</td>
-                    <td><a href="#/district/{{bizByDist.supervisor_district}}">Details</a></td>
-                </tr>
-            </tbody>
-        </table>
+
+    <div class="col-lg-6 col-md-12">
+        <div id="wrapper" style="text-align: center">
+            <div id="activeByDistrict" style="display: inline-block;">
+
+                <h2>Active Businesses by District</h2>
+                <am-chart id="businessesByDistrictChart" options="businessesByDistrictChart" height="500px" width="700px"></am-chart>
+            </div>
+        </div>
+
+
+        <!-- # Businesses Per District -->
+        <div ng-show="businessByDistrict" style="text-align: center">
+          <div style="display: inline-block;">
+            <h4>Data</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Supervisory District</th>
+                        <th>Number of Businesses</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="bizByDist in businessByDistrict | orderBy: 'supervisor_district'">
+                        <td ng-show="bizByDist.supervisor_district">{{bizByDist.supervisor_district | number}}</td>
+                        <td ng-hide="bizByDist.supervisor_district">Unlabelled</td>
+                        <td>{{bizByDist.count | number}}</td>
+                        <td ng-show="bizByDist.supervisor_district"><a href="#/district/{{bizByDist.supervisor_district}}" class="btn btn-primary btn-sm active" role="button" aria-pressed="true">District {{bizByDist.supervisor_district}} details</a></td>
+                    </tr>
+                </tbody>
+            </table>
+          </div>
+        </div>
     </div>
 
 
-    <am-chart id="businessesByIndustryChart" options="businessesByIndustryChart" height="500px" width="700px"></am-chart>
+    <div class="col-lg-6 col-md-12">
+        <div id="wrapper2" style="text-align: center">
+            <div id="activeByIndustry" style="display: inline-block;">
 
-    <!-- # Businesses Per Industry -->
-    <div ng-show="businessByIndustry">
-        <h2>Business by Industry (Raw Data)</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>NAIC Code Description / Industry</th>
-                    <th>Number of Businesses</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="bizByIndustry in businessByIndustry | orderBy: 'count'">
-                    <td ng-show="bizByIndustry.industry">{{bizByIndustry.industry}}</td>
-                    <td ng-hide="bizByIndustry.industry">Unlabelled</td>
-                    <td>{{bizByIndustry.count | number}}</td>
-                </tr>
-            </tbody>
-        </table>
+                <h2>Active Businesses by Industry</h2>
+                <am-chart id="businessesByIndustryChart" options="businessesByIndustryChart" height="700px" width="700px"></am-chart>
+            </div>
+        </div>
+        <!-- # Businesses Per Industry -->
+        <div ng-show="businessByIndustry" style="text-align: center">
+          <div style="display: inline-block;">
+            <h4>Data</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>NAIC Code Description / Industry</th>
+                        <th>Number of Businesses</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="bizByIndustry in businessByIndustry | orderBy: 'count'">
+                        <td ng-show="bizByIndustry.industry">{{bizByIndustry.industry}}</td>
+                        <td ng-hide="bizByIndustry.industry">Unlabelled</td>
+                        <td>{{bizByIndustry.count | number}}</td>
+                    </tr>
+                </tbody>
+            </table>
+          </div>
+        </div>
+
     </div>
 
-    <am-chart id="businessesByYearChart" options="businessesByYearChart" height="500px" width="700px"></am-chart>
+</div>
+
+<div class="row">
 
 
-    <!-- # Businesses Per Year -->
-    <div ng-show="businessesByYear">
-        <h2>Business by Year (Raw Data)</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Year</th>
-                    <!-- <th>Number of Active Businesses</th> -->
-                    <th>Number of Businesses Opened</th>
-                    <th>Number of Businesses Closed</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="bizByYear in businessesByYear | orderBy: '-year'">
-                    <td ng-show="bizByYear.year">{{bizByYear.year}}</td>
-                    <td ng-hide="bizByYear.year">Unlabelled</td>
-                    <!-- <td>{{bizByYear.activeBusinesses | number}}</td> -->
-                    <td>{{bizByYear.openedBusinesses | number}}</td>
-                    <td>{{bizByYear.closedBusinesses | number}}</td>
-                </tr>
-            </tbody>
-        </table>
+    <div class="col-lg-12 col-md-12">
+        <div id="wrapper3" style="text-align: center">
+            <div id="businessByYears" style="display: inline-block;">
+                <h2>Business by Year</h2>
+                <am-chart id="businessesByYearChart" options="businessesByYearChart" height="500px" width="700px"></am-chart>
+            </div>
+        </div>
+
+
+        <!-- # Businesses Per Year -->
+        <div ng-show="businessesByYear" style="text-align: center">
+          <div  style="display: inline-block;">
+            <h4>Data</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Year</th>
+                        <!-- <th>Number of Active Businesses</th> -->
+                        <th>Number of Businesses Opened</th>
+                        <th>Number of Businesses Closed</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="bizByYear in businessesByYear | orderBy: '-year'">
+                        <td ng-show="bizByYear.year">{{bizByYear.year}}</td>
+                        <td ng-hide="bizByYear.year">Unlabelled</td>
+                        <!-- <td>{{bizByYear.activeBusinesses | number}}</td> -->
+                        <td>{{bizByYear.openedBusinesses | number}}</td>
+                        <td>{{bizByYear.closedBusinesses | number}}</td>
+                    </tr>
+                </tbody>
+            </table>
+          </div>
+        </div>
+
     </div>
 </div>

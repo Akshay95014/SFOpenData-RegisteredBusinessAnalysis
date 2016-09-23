@@ -1,48 +1,64 @@
 <div>
-    <h4>Details for Supervisory District {{district_num}}</h4>
+    <h3>Details for Supervisory District {{district_num}}</h3>
 </div>
 
+<div class="row">
 
-<am-chart id="businessesByNeighborhoodChart" options="businessesByNeighborhoodChart" height="500px" width="700px"></am-chart>
+    <div class="col-lg-6 col-md-12">
+        <div id="wrapper" style="text-align: center">
+            <div id="activeByNeighborhood" style="display: inline-block;">
+                <h4>Businesses by Neighborhood</h4>
+                <am-chart id="businessesByNeighborhoodChart" options="businessesByNeighborhoodChart" height="500px" width="700px"></am-chart>
+            </div>
+        </div>
+        <div ng-show="neighborhoodBusinesses" style="text-align: center">
+          <div style="display: inline-block;">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Neighborhood</th>
+                        <th>Number of Businesses</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="entry in neighborhoodBusinesses">
+                        <td ng-show="entry.neighborhood">{{entry.neighborhood}}</td>
+                        <td ng-hide="entry.neighborhood">Unlabelled</td>
+                        <td>{{entry.count}}</td>
+                    </tr>
+                </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
 
-<div ng-show="neighborhoodBusinesses">
-    <h2>Businesses by Neighborhood</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Neighborhood</th>
-                <th>Number of Businesses</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr ng-repeat="entry in neighborhoodBusinesses">
-                <td ng-show="entry.neighborhood">{{entry.neighborhood}}</td>
-                <td ng-hide="entry.neighborhood">Unlabelled</td>
-                <td>{{entry.count}}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="col-lg-6 col-md-12">
+      <div id="wrapper2" style="text-align: center">
+        <div id="activeByIndustry" style="display: inline-block;">
+          <h4>Businesses by Industry</h4>
+          <am-chart id="businessesByIndustryChart" options="businessesByIndustryChart" height="500px" width="700px"></am-chart>
+        </div>
+      </div>
+        <div ng-show="industryBusinesses" style="text-align: center">
+          <div style="display: inline-block;">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Industry</th>
+                            <th>Number of Businesses</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="entry in industryBusinesses">
+                            <td ng-show="entry.industry">{{entry.industry}}</td>
+                            <td ng-hide="entry.industry">Unlabelled</td>
+                            <td>{{entry.count}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+              </div>
+            </div>
+    </div>
 </div>
 
-<am-chart id="businessesByIndustryChart" options="businessesByIndustryChart" height="500px" width="700px"></am-chart>
-
-<div ng-show="industryBusinesses">
-    <h2>Businesses by Industry</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Industry</th>
-                <th>Number of Businesses</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr ng-repeat="entry in industryBusinesses">
-                <td ng-show="entry.industry">{{entry.industry}}</td>
-                <td ng-hide="entry.industry">Unlabelled</td>
-                <td>{{entry.count}}</td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-
-<a href="#/main"> Go back to main page </a>
+<a href="#/main" class="btn btn-primary btn-lg btn-block" role="button" aria-pressed="true"> Go back to main page </a>

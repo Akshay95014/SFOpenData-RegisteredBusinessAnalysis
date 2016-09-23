@@ -1,6 +1,6 @@
 (function() {
 
-    var app = angular.module("registeredBusinessAnalysis", ["ngRoute", "amChartsDirective"]);
+    var app = angular.module("registeredBusinessAnalysis", ["ngRoute", "amChartsDirective", "ui.bootstrap", 'datatables']);
 
     app.filter('capitalize', function() {
         return function(input) {
@@ -21,6 +21,10 @@
             .when("/district/:district_num", {
                 templateUrl: "district_details.html",
                 controller: "DistrictController"
+            })
+            .when("/city-search", {
+                templateUrl: "city-search.html",
+                controller: "CitySearchController"
             })
             .otherwise({
                 redirectTo: "/main"
