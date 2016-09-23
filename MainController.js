@@ -306,14 +306,76 @@
             }
         }, 1000)
 
-        uiGmapGoogleMapApi.then(function(maps) {
-            $scope.map = { center: { latitude: 37.7749, longitude: -122.4194 }, zoom: 13 };
-        });
+
+
+
+        $scope.markers = [];
+
+
+        // $scope.onClick = function(marker, eventName, model) {
+        //     $scope.windowOptions.show = !$scope.windowOptions.show;
+        //     $scope.selectedCoords = model.coords;
+        //     $scope.info = model.data;
+        // };
+        //
+        // $scope.closeClick = function() {
+        //     $scope.windowOptions.show = false;
+        // };
+
+        var onMapData = function(data){
+          $scope.addresses = [];
+
+          for (var index in data){
+            if (data[index].location){
+              //$log.debug("MAP DATA POINT: " + data[index].location.coordinates[0]);
+              var obj = {};
+              obj.name = data[index].dba_name;
+              obj.lat = data[index].location.coordinates[1];
+              obj.long = data[index].location.coordinates[0];
+              $scope.addresses.push(obj);
+            }
+
+          }
+
+          // $scope.addresses = [{
+          //     lat: 51.518305,
+          //     lng: -0.130444
+          // }, {
+          //     lat: 48.856127,
+          //     lng: 2.352362
+          // }, {
+          //     lat: 40.431598,
+          //     lng: -3.704263
+          // }];
+          uiGmapGoogleMapApi.then(function(maps) {
+            $scope.map = {
+              center: {
+                latitude: 37.7749,
+                longitude: -122.4194
+              },
+              zoom: 13
+            };
+
+            for (var i = 0; i < $scope.addresses.length; i++) {
+              $scope.markers.push({
+                id: $scope.markers.length,//(($scope.markers) ?  $scope.markers.length: 0),
+                coords: {
+                  latitude: $scope.addresses[i].lat,
+                  longitude: $scope.addresses[i].long
+                },
+                // data: $scope.addresses[i].name
+              });
+            }
+            $log.debug($scope.markers[0]);
+          });
+        }
+
 
         //  opendata.businessesByDistrict().then(onBizByDistrict, onError);
         opendata.activeBusinessesByDistrict().then(onBizByDistrict, onError);
         opendata.activeBusinessesByIndustry().then(onBizByIndustry, onError);
         opendata.businessesByStartYear().then(onBizByYear, onError);
+       opendata.getBusinessesForMap().then(onMapData, onError);
         //opendata.activeBusinessesByYear().then(onActiveBizByYear, onError);
         //  opendata.businessesByEndYear().then(onBizByYear, onError);
 

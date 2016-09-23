@@ -1,22 +1,33 @@
-<div class = "container">
-<div class="row row-offcanvas row-offcanvas-right">
-  <div class="col-lg-12">
-    <div class="jumbotron">
-        <h2>Registered Business Locations - San Francisco Data Set</h2>
-        <p>This web application analyzes data from San Francisco's OpenData Portal. The data set analyzed here includes information about any business that pays taxes to the City and County of San Francisco (taken from the SF OpenData website).
-        The data set includes information about business names, business owners, locations, start and end-dates, and industry classifications. For more information on the dataset, please follow the link in the navigation bar called "Raw Data".</p>
+<div class="container">
+    <div class="row row-offcanvas row-offcanvas-right">
+        <div class="col-lg-12">
+            <div class="jumbotron">
+                <h2>Registered Business Locations - San Francisco Data Set</h2>
+                <p>This web application analyzes data from San Francisco's OpenData Portal. The data set analyzed here includes information about any business that pays taxes to the City and County of San Francisco (taken from the SF OpenData website). The
+                    data set includes information about business names, business owners, locations, start and end-dates, and industry classifications. For more information on the dataset, please follow the link in the navigation bar called "Raw Data".</p>
+            </div>
+        </div>
     </div>
-  </div>
+
+    Center of map: {{map.center}} Zoom of map: {{map.zoom}}
+
+    <!-- <ui-gmap-google-map center="map.center" zoom="map.zoom" ng-if="map.center">
+
+        <ui-gmap-markers models="markers" idkey="markers.id" coords="'coords'" fit="true">
+        </ui-gmap-markers>
+    </ui-gmap-google-map> -->
+
+    <div ng-if="addresses">
+      <ui-gmap-google-map center="map.center" zoom="map.zoom" ng-if="map.center">
+          <ui-gmap-markers models="markers" idkey="markers.id" coords="'coords'" fit="true"></ui-gmap-markers>
+      </ui-gmap-google-map>
+    </div>
+
+
 </div>
-</div>
+
+{{error}}
 <div class="row">
-    {{error}}
-
-    Center of map: {{map.center}}
-    Zoom of map: {{map.zoom}}
-
-    <ui-gmap-google-map center="map.center" zoom="map.zoom" ng-if="map.center"></ui-gmap-google-map>
-
 
     <div class="col-lg-6 col-md-12">
         <div id="wrapper" style="text-align: center">

@@ -4,6 +4,7 @@
 
         var appKey = "&$$app_token=Uw0ptivuIBN9JgGZLQtFZJ2In";
         var yearConstraint = "location_start_date%20>%20'1969-12-31T11:59:59'"
+        var twentyOneYearConstraint = "location_start_date%20>%20'2016-05-31T11:59:59'"
 
         var getLocationCityData = function(city) {
             return $http.get("https://data.sfgov.org/resource/vbiu-2p9h.json?city=" + city + "&$$app_token=Uw0ptivuIBN9JgGZLQtFZJ2In")
@@ -11,6 +12,18 @@
                     return response.data;
                 });
         };
+
+        var getBusinessesForMap = function(){
+          var queryString = "?$select=dba_name, location";
+          queryString += "&$where=" + twentyOneYearConstraint;
+          queryString += "AND city='San Francisco'";
+          queryString += "AND naic_code_description='Professional, Scientific, and Technical Services'"
+          return $http.get("https://data.sfgov.org/resource/vbiu-2p9h.json" + queryString + appKey)
+              .then(function(response) {
+                  return response.data;
+              });
+          //queryString += "&$group=supervisor_district";
+        }
 
         var businessesByDistrict = function() {
             var queryString = "?$select=supervisor_district,%20count(*)";
@@ -230,7 +243,8 @@
             businessesByIndustryInDistrict: businessesByIndustryInDistrict,
             //activeBusinessesByYear: activeBusinessesByYear,
             activeBusinessesByDistrict: activeBusinessesByDistrict,
-            activeBusinessesByIndustry: activeBusinessesByIndustry
+            activeBusinessesByIndustry: activeBusinessesByIndustry,
+            getBusinessesForMap: getBusinessesForMap
         };
 
     };
