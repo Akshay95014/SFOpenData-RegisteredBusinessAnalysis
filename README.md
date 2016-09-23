@@ -11,4 +11,4 @@ This web application has been developed to aid in the visualization of the datas
 4. Newly registered and closed business locations by year in SF
 5. and some more features!
 
-Finally, if you have some feedback and suggestions for the analysese shown here, please feel free to fill this form out: https://goo.gl/forms/8cY2EWUOloQ5HJJw2 
+Finally, if you have some feedback and suggestions for the analyses shown here, please feel free to fill this form out: https://goo.gl/forms/8cY2EWUOloQ5HJJw2 
