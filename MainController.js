@@ -13,10 +13,13 @@
             return 0;
         }
 
-        //
-        // var onGotData = function(data) {
-        //     $scope.queryData = data;
-        // };
+        function compareDistricts(a, b) {
+            if (a.supervisor_district < b.supervisor_district)
+                return -1;
+            if (a.supervisor_district > b.supervisor_district)
+                return 1;
+            return 0;
+        }
 
         var onError = function() {
             $scope.error = "Couldn't fetch the data";
@@ -46,6 +49,8 @@
                     $scope.businessByDistrict_forChart.push(business);
                 }
             });
+            $scope.businessByDistrict_forChart.sort(compareDistricts);
+          //  $scope.dataFromBizByDistPromise();
         };
 
         // Prepare AMCHARTS data for businesses by district
@@ -104,7 +109,7 @@
                     fillAlphas: 1
                 }]
             }
-        }, 1000)
+        }, 5000)
 
         // Get businesses by industry
         var onBizByIndustry = function(data) {
@@ -186,7 +191,7 @@
                     fillAlphas: 1,
                 }]
             }
-        }, 1000)
+        }, 5000)
 
         // Get businesses by year
         var onBizByYear = function(data) {
@@ -278,7 +283,7 @@
                     fillAlphas: 1,
                 }]
             }
-        }, 1000)
+        }, 5000)
 
 
 
