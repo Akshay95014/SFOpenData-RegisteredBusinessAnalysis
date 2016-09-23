@@ -13,10 +13,10 @@
 
     <!-- Google Map -->
     <div ng-if="addresses">
-      <h3>Map of New Professional, Scientific, and Technical Service Business Locations from June 2016 to Present</h3>
-      <ui-gmap-google-map center="map.center" zoom="map.zoom" ng-if="map.center">
-          <ui-gmap-markers models="markers" idkey="markers.id" coords="'coords'" fit="true"></ui-gmap-markers>
-      </ui-gmap-google-map>
+        <h3>Map of New Professional, Scientific, and Technical Service Business Locations from June 2016 to Present</h3>
+        <ui-gmap-google-map center="map.center" zoom="map.zoom" ng-if="map.center">
+            <ui-gmap-markers models="markers" idkey="markers.id" coords="'coords'" fit="true"></ui-gmap-markers>
+        </ui-gmap-google-map>
     </div>
 
 
@@ -27,13 +27,29 @@
 
 <div class="row">
 
+  <div class="col-lg-12">
+    <div id="wrapperAllDistricts" style="text-align: center">
+        <div id="newByDistrict" style="display: inline-block;">
+
+            <h2>New Business Locations by District</h2>
+            <!-- <div ng-if="$scope.eachDistrictByYear"> -->
+                <am-chart id="eachDistrictByYear" options="newBizByDistrictChart" height="700px" width="1100px" ng-if="eachDistrictByYear"></am-chart>
+            <!-- </div> -->
+        </div>
+    </div>
+    </div>
+  </div>
+  <div class="row">
+
     <!-- Title and chart for Active Businesses by District -->
     <div class="col-lg-6 col-md-12">
         <div id="wrapper" style="text-align: center">
             <div id="activeByDistrict" style="display: inline-block;">
 
-                <h2>Active Businesses by District</h2>
-                <am-chart id="businessesByDistrictChart" options="businessesByDistrictChart" height="500px" width="700px"></am-chart>
+                <h2>Active Business Locations by District</h2>
+                <div ng-if="businessByDistrict_forChart">
+                    <am-chart id="businessesByDistrictChart" options="businessesByDistrictChart" height="500px" width="700px" ng-if="businessByDistrict"></am-chart>
+                </div>
             </div>
         </div>
 
@@ -68,8 +84,8 @@
         <div id="wrapper2" style="text-align: center">
             <div id="activeByIndustry" style="display: inline-block;">
 
-                <h2>Active Businesses by Industry</h2>
-                <am-chart id="businessesByIndustryChart" options="businessesByIndustryChart" height="700px" width="700px"></am-chart>
+                <h2>Active Business Locations by Industry</h2>
+                <am-chart id="businessesByIndustryChart" options="businessesByIndustryChart" height="700px" width="700px" ng-if="businessByIndustry_forChart"></am-chart>
             </div>
         </div>
         <!-- # Businesses Per Industry -->
@@ -101,11 +117,11 @@
 <div class="row">
 
     <!-- Title and chart for Businesses by Year -->
-    <div class="col-lg-12 col-md-12">
+    <div class="col-lg-6 col-md-12">
         <div id="wrapper3" style="text-align: center">
             <div id="businessByYears" style="display: inline-block;">
-                <h2>Business by Year</h2>
-                <am-chart id="businessesByYearChart" options="businessesByYearChart" height="500px" width="700px"></am-chart>
+                <h2>Business Loations by Year</h2>
+                <am-chart id="businessesByYearChart" options="businessesByYearChart" height="500px" width="700px" ng-if="businessesByYear"></am-chart>
             </div>
         </div>
 
@@ -118,8 +134,8 @@
                         <tr>
                             <th>Year</th>
                             <!-- <th>Number of Active Businesses</th> -->
-                            <th>Number of Businesses Opened</th>
-                            <th>Number of Businesses Closed</th>
+                            <th>Number of Business Locations Opened</th>
+                            <th>Number of Business Locations Closed</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -136,4 +152,6 @@
         </div>
 
     </div>
+
+
 </div>

@@ -50,7 +50,8 @@
                 }
             });
             $scope.businessByDistrict_forChart.sort(compareDistricts);
-          //  $scope.dataFromBizByDistPromise();
+            // $scope.businessesByDistrictChart.validateNow();
+            //  $scope.dataFromBizByDistPromise();
         };
 
         // Prepare AMCHARTS data for businesses by district
@@ -119,21 +120,33 @@
                 business.count = parseFloat(business.count);
             });
 
+            // $scope.businessByIndustry_forChart = [];
+            //
+            // //Get percentage of businesses by industry
+            // angular.forEach(data, function(business) {
+            //     if (business.industry) {
+            //         business.count = parseFloat(business.count);
+            //         business.percent = ((business.count / $scope.totalBusinesses) * 100).toFixed(2);
+            //         $scope.businessByIndustry_forChart.push(business);
+            //     }
+            // });
+        };
+
+        // Prepare AMCHARTS data for businesses by industry
+        $scope.dataFromBizByIndustryPromise = function() {
+            var deferred = $q.defer();
+
+
             $scope.businessByIndustry_forChart = [];
 
             //Get percentage of businesses by industry
-            angular.forEach(data, function(business) {
+            angular.forEach($scope.businessByIndustry, function(business) {
                 if (business.industry) {
                     business.count = parseFloat(business.count);
                     business.percent = ((business.count / $scope.totalBusinesses) * 100).toFixed(2);
                     $scope.businessByIndustry_forChart.push(business);
                 }
             });
-        };
-
-        // Prepare AMCHARTS data for businesses by industry
-        $scope.dataFromBizByIndustryPromise = function() {
-            var deferred = $q.defer();
 
             var data = $scope.businessByIndustry_forChart;
 
@@ -285,6 +298,150 @@
             }
         }, 5000)
 
+        var onNewBizByDistrict = function(data) {
+            $log.debug("newbizbydistrict = " + data);
+            // var allDistricts = {};
+            // for (var index in data){
+            //   var district = data[index].supervisor_district;
+            //   if (!allDistricts[district]){
+            //     allDistricts[district] = [];
+            //     $log.debug("district = " + district);
+            //   }
+            //   allDistricts[district].push(data[index]);
+            // }
+            // $log.debug(allDistricts);
+            $scope.eachDistrictByYear = [];
+            var districtArray = ["1", "10", "11", "2", "3", "4", "5", "6", "7", "8", "9"]
+            $log.debug(districtArray);
+
+            $log.debug("data: ");
+            $log.debug(data);
+
+            for (var j = 0; j < 10; j++) {   // j = 0
+                var year = 2007+j;      // year = 2012
+                var obj = {};
+                obj.year = year;        // obj.year = 2012
+                for (var i = 0; i < districtArray.length; i++) { // i = 0                       i = 1
+                  var district = districtArray[i];               // district = "1"              district = "10"
+                  for (var q in data){
+                    if (data[q].supervisor_district === district && data[q].date_trunc_y_location_start_date === year+"-01-01T00:00:00.000"){
+                      obj[district] = data[q].count;
+                      data.splice(q,1);
+                    }
+                  }
+                  //var index = i + j*districtArray.length;        //index = 0 + 0 = 0            index = 1 + 0 = 1
+                //  $log.debug("district = " + district + ", index = " + index + ", data[index].count = " + data[index].count);
+                  //obj[district] = data[index].count;              //obj["1"] = data[0].count    obj["10"] = data[1].count
+                }
+                $scope.eachDistrictByYear.push(obj);
+            }
+            $log.debug("each district by year:");
+            $log.debug($scope.eachDistrictByYear);
+
+        };
+
+        //Prepare data for business by year chart
+        $scope.dataFromNewBizByDistrictPromise = function() {
+            var deferred = $q.defer();
+
+            var data = $scope.eachDistrictByYear;
+
+            deferred.resolve(data)
+            return deferred.promise;
+        };
+
+        $scope.newBizByDistrictChart = $timeout(function() {
+            return {
+                data: $scope.dataFromNewBizByDistrictPromise(),
+                type: "serial",
+                theme: 'light',
+                categoryField: "year",
+                rotate: false,
+                legend: {
+                    enabled: true
+                },
+                chartScrollbar: {
+                    enabled: true,
+                },
+                categoryAxis: {
+                    gridPosition: "start",
+                    parseDates: false,
+                    labelRotation: 45
+                },
+                valueAxes: [{
+                    position: "left",
+                    title: "Number of Businesses"
+                }],
+                graphs: [{
+                    lineColor: "#fcd203",
+                    title: "District 1",
+                    valueField: "1",
+                    balloonText: "Opened in district 1 in [[category]]:<br><b><span style='font-size:14px;'>[[value]]</span></b>",
+                    fillAlphas: 0,
+                },{
+                    lineColor: "#fcb603",
+                    title: "District 2",
+                    valueField: "2",
+                    balloonText: "Opened in district 2 in [[category]]:<br><b><span style='font-size:14px;'>[[value]]</span></b>",
+                    fillAlphas: 0,
+                },{
+                    lineColor: "#5a9312",
+                    title: "District 3",
+                    valueField: "3",
+                    balloonText: "Opened in district 3 in [[category]]:<br><b><span style='font-size:14px;'>[[value]]</span></b>",
+                    fillAlphas: 0,
+                },{
+                    lineColor: "#03fc84",
+                    title: "District 4",
+                    valueField: "4",
+                    balloonText: "Opened in district 4 in [[category]]:<br><b><span style='font-size:14px;'>[[value]]</span></b>",
+                    fillAlphas: 0,
+                },{
+                    lineColor: "#03e6fc",
+                    title: "District 5",
+                    valueField: "5",
+                    balloonText: "Opened in district 5 in [[category]]:<br><b><span style='font-size:14px;'>[[value]]</span></b>",
+                    fillAlphas: 0,
+                },{
+                    lineColor: "#036efc",
+                    title: "District 6",
+                    valueField: "6",
+                    balloonText: "Opened in district 6 in [[category]]:<br><b><span style='font-size:14px;'>[[value]]</span></b>",
+                    fillAlphas: 0,
+                },{
+                    lineColor: "#1a059a",
+                    title: "District 7",
+                    valueField: "7",
+                    balloonText: "Opened in district 7 in [[category]]:<br><b><span style='font-size:14px;'>[[value]]</span></b>",
+                    fillAlphas: 0,
+                },{
+                    lineColor: "#5d059a",
+                    title: "District 8",
+                    valueField: "8",
+                    balloonText: "Opened in district 8 in [[category]]:<br><b><span style='font-size:14px;'>[[value]]</span></b>",
+                    fillAlphas: 0,
+                },{
+                    lineColor: "#930d51",
+                    title: "District 9",
+                    valueField: "9",
+                    balloonText: "Opened in district 9 in [[valueField]] [[category]]:<br><b><span style='font-size:14px;'>[[value]]</span></b>",
+                    fillAlphas: 0,
+                },{
+                    lineColor: "#670d10",
+                    title: "District 10",
+                    valueField: "10",
+                    balloonText: "Opened in district 10 in [[category]]:<br><b><span style='font-size:14px;'>[[value]]</span></b>",
+                    fillAlphas: 0,
+                },{
+                    lineColor: "#130303",
+                    title: "District 11",
+                    valueField: "11",
+                    balloonText: "Opened in district 11 in [[category]]:<br><b><span style='font-size:14px;'>[[value]]</span></b>",
+                    fillAlphas: 0,
+                }]
+            }
+        }, 5000)
+
 
 
         // PREPARE DATA FOR GOOGLE MAPS
@@ -328,11 +485,11 @@
         }
 
 
-        opendata.activeBusinessesByDistrict().then(onBizByDistrict, onError);     //Active businesses by district API response
-        opendata.activeBusinessesByIndustry().then(onBizByIndustry, onError);     //Active businesses by industry API response
-        opendata.businessesByStartYear().then(onBizByYear, onError);              //New and closed businesses by year API response
-        opendata.getBusinessesForMap().then(onMapData, onError);                  //Data for map API response
-
+        opendata.activeBusinessesByDistrict().then(onBizByDistrict, onError); //Active businesses by district API response
+        opendata.activeBusinessesByIndustry().then(onBizByIndustry, onError); //Active businesses by industry API response
+        opendata.businessesByStartYear().then(onBizByYear, onError); //New and closed businesses by year API response
+        opendata.getBusinessesForMap().then(onMapData, onError); //Data for map API response
+        opendata.newBusinessesByDistrictOverTime().then(onNewBizByDistrict, onError); //Data for new businesses by district API response
         // $scope.getBusinessesByCity = getBusinessesByCity;
 
 

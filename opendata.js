@@ -6,6 +6,18 @@
         var yearConstraint = "location_start_date%20>%20'1969-12-31T11:59:59'";
         var twentyOneYearConstraint = "location_start_date%20>%20'2016-05-31T11:59:59'";
 
+      //  https://data.sfgov.org/resource/vbiu-2p9h.json?$select=count(*),%20supervisor_district,%20date_trunc_y(location_start_date)&$group=supervisor_district,date_trunc_y(location_start_date)
+        var newBusinessesByDistrictOverTime = function(){
+          var queryString = "?$select=count(*),%20supervisor_district,%20date_trunc_y(location_start_date)";
+          queryString += "&$where=location_start_date%20>%20'2007-01-01T00:00:00' AND location_start_date%20<%20'2017-01-01T00:00:00'";
+          queryString += "&$order=date_trunc_y(location_start_date) ASC"
+          queryString += "&$group=supervisor_district,date_trunc_y(location_start_date)";
+          return $http.get("https://data.sfgov.org/resource/vbiu-2p9h.json" + queryString + appKey)
+              .then(function(response) {
+                  return response.data;
+              });
+        };
+
         // Get
         var getLocationCityData = function(city) {
             return $http.get("https://data.sfgov.org/resource/vbiu-2p9h.json?city=" + city + "&$$app_token=Uw0ptivuIBN9JgGZLQtFZJ2In")
@@ -244,7 +256,8 @@
             //activeBusinessesByYear: activeBusinessesByYear,
             activeBusinessesByDistrict: activeBusinessesByDistrict,
             activeBusinessesByIndustry: activeBusinessesByIndustry,
-            getBusinessesForMap: getBusinessesForMap
+            getBusinessesForMap: getBusinessesForMap,
+            newBusinessesByDistrictOverTime: newBusinessesByDistrictOverTime
         };
 
     };
