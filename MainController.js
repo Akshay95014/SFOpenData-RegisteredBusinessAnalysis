@@ -4,6 +4,7 @@
 
     var MainController = function($scope, $log, $location, opendata, $timeout, $q, uiGmapGoogleMapApi) {
 
+        // Enables sorting by year for businesses by year graph
         function compare(a, b) {
             if (a.year < b.year)
                 return -1;
@@ -12,22 +13,21 @@
             return 0;
         }
 
-
-        var onGotData = function(data) {
-            $scope.queryData = data;
-        };
+        //
+        // var onGotData = function(data) {
+        //     $scope.queryData = data;
+        // };
 
         var onError = function() {
             $scope.error = "Couldn't fetch the data";
         }
 
-        var getBusinessesByCity = function(city) {
-            opendata.getLocationCityData(city).then(onGotData, onError);
-        };
+        // var getBusinessesByCity = function(city) {
+        //     opendata.getLocationCityData(city).then(onGotData, onError);
+        // };
 
+        // Businesses by District
         var onBizByDistrict = function(data) {
-
-
             $scope.businessByDistrict = data;
             $scope.totalBusinesses = 0;
 
@@ -37,7 +37,7 @@
 
             $scope.businessByDistrict_forChart = [];
 
-            //This will convert all numeric strings to numbers
+            // Get % of businesses for each district
             angular.forEach(data, function(business) {
                 if (business.supervisor_district) {
                     business.supervisor_district = parseFloat(business.supervisor_district);
@@ -48,6 +48,7 @@
             });
         };
 
+        // Prepare AMCHARTS data for businesses by district
         $scope.dataFromBizByDistPromise = function() {
             var deferred = $q.defer();
 
@@ -57,17 +58,14 @@
             return deferred.promise;
         };
 
-
+        //Amchart options for businesses by district
         $scope.businessesByDistrictChart = $timeout(function() {
             return {
-                // we can also use a promise for the data property to delay the rendering of
-                // the chart till we actually have data
                 data: $scope.dataFromBizByDistPromise(),
                 type: "serial",
                 theme: 'light',
                 categoryField: "supervisor_district",
                 rotate: false,
-                // pathToImages: 'https://cdnjs.cloudflare.com/ajax/libs/amcharts/3.13.0/images/',
                 legend: {
                     enabled: true
                 },
@@ -108,20 +106,19 @@
             }
         }, 1000)
 
+        // Get businesses by industry
         var onBizByIndustry = function(data) {
             $scope.businessByIndustry = data;
 
-            //This will convert all numeric strings to numbers
             angular.forEach($scope.businessByIndustry, function(business) {
                 business.count = parseFloat(business.count);
             });
 
             $scope.businessByIndustry_forChart = [];
 
-            //This will convert all numeric strings to numbers
+            //Get percentage of businesses by industry
             angular.forEach(data, function(business) {
                 if (business.industry) {
-                    //business.industry = parseFloat(business.supervisor_district);
                     business.count = parseFloat(business.count);
                     business.percent = ((business.count / $scope.totalBusinesses) * 100).toFixed(2);
                     $scope.businessByIndustry_forChart.push(business);
@@ -129,6 +126,7 @@
             });
         };
 
+        // Prepare AMCHARTS data for businesses by industry
         $scope.dataFromBizByIndustryPromise = function() {
             var deferred = $q.defer();
 
@@ -138,7 +136,7 @@
             return deferred.promise;
         };
 
-
+        //Amchart options for businesses by industry
         $scope.businessesByIndustryChart = $timeout(function() {
             return {
                 // we can also use a promise for the data property to delay the rendering of
@@ -190,6 +188,7 @@
             }
         }, 1000)
 
+        // Get businesses by year
         var onBizByYear = function(data) {
             var businessesOpenedByYear = data;
             $scope.businessesByYear = [];
@@ -224,37 +223,15 @@
                     }
                 }
                 $scope.businessesByYear.sort(compare);
-                //This will convert all numeric strings to numbers
-                // angular.forEach($scope.businessByYear, function(business) {
-                //     business.count = parseFloat(business.count);
-                // });
             }, onError);
-            /*$log.debug("About to do the activebusinessesbyyear");
-            opendata.activeBusinessesByYear().then(function(activeBusinesses) {
-              for (var index in $scope.businessesByYear) {
-                var currYear = $scope.businessesByYear[index].year;
-                $log.debug("activeBusinesses = " + activeBusinesses.length);
-                for (var active_index in activeBusinesses) {
-                  $log.debug("CurrYear = " + currYear + ", and activeBusinesses = " + activeBusinesses[active_index].year);
-                  if (currYear === activeBusinesses[active_index].year) {
-                    $log.debug("Inside maincontroller. Active businesses = " + activeBusinesses[active_index].activeBusinesses);
-                    $scope.businessesByYear[index].activeBusinesses = activeBusinesses[active_index].activeBusinesses;
-                  }
-                }
-              }
-            }, onError);*/
         };
 
 
         var onActiveBizByYear = function(data) {
             $scope.activeBusinessesByYear = data;
-
-            //This will convert all numeric strings to numbers
-            // angular.forEach($scope.activeBusinessesByYear, function(business) {
-            //     business.activeBusinesses = parseFloat(business.activeBusinesses);
-            // });
         };
 
+        //Prepare data for business by year chart
         $scope.dataFromBizByYearPromise = function() {
             var deferred = $q.defer();
 
@@ -264,17 +241,14 @@
             return deferred.promise;
         };
 
-
+        //AMCHARTS options for businesses by year
         $scope.businessesByYearChart = $timeout(function() {
             return {
-                // we can also use a promise for the data property to delay the rendering of
-                // the chart till we actually have data
                 data: $scope.dataFromBizByYearPromise(),
                 type: "serial",
                 theme: 'light',
                 categoryField: "year",
                 rotate: false,
-                // pathToImages: 'https://cdnjs.cloudflare.com/ajax/libs/amcharts/3.13.0/images/',
                 legend: {
                     enabled: true
                 },
@@ -308,78 +282,53 @@
 
 
 
-
+        // PREPARE DATA FOR GOOGLE MAPS
         $scope.markers = [];
 
 
-        // $scope.onClick = function(marker, eventName, model) {
-        //     $scope.windowOptions.show = !$scope.windowOptions.show;
-        //     $scope.selectedCoords = model.coords;
-        //     $scope.info = model.data;
-        // };
-        //
-        // $scope.closeClick = function() {
-        //     $scope.windowOptions.show = false;
-        // };
+        var onMapData = function(data) {
+            $scope.addresses = [];
 
-        var onMapData = function(data){
-          $scope.addresses = [];
+            for (var index in data) {
+                if (data[index].location) {
+                    var obj = {};
+                    obj.name = data[index].dba_name;
+                    obj.lat = data[index].location.coordinates[1];
+                    obj.long = data[index].location.coordinates[0];
+                    $scope.addresses.push(obj);
+                }
 
-          for (var index in data){
-            if (data[index].location){
-              //$log.debug("MAP DATA POINT: " + data[index].location.coordinates[0]);
-              var obj = {};
-              obj.name = data[index].dba_name;
-              obj.lat = data[index].location.coordinates[1];
-              obj.long = data[index].location.coordinates[0];
-              $scope.addresses.push(obj);
             }
 
-          }
+            uiGmapGoogleMapApi.then(function(maps) {
+                $scope.map = {
+                    center: {
+                        latitude: 37.7749,
+                        longitude: -122.4194
+                    },
+                    zoom: 13
+                };
 
-          // $scope.addresses = [{
-          //     lat: 51.518305,
-          //     lng: -0.130444
-          // }, {
-          //     lat: 48.856127,
-          //     lng: 2.352362
-          // }, {
-          //     lat: 40.431598,
-          //     lng: -3.704263
-          // }];
-          uiGmapGoogleMapApi.then(function(maps) {
-            $scope.map = {
-              center: {
-                latitude: 37.7749,
-                longitude: -122.4194
-              },
-              zoom: 13
-            };
-
-            for (var i = 0; i < $scope.addresses.length; i++) {
-              $scope.markers.push({
-                id: $scope.markers.length,//(($scope.markers) ?  $scope.markers.length: 0),
-                coords: {
-                  latitude: $scope.addresses[i].lat,
-                  longitude: $scope.addresses[i].long
-                },
-                // data: $scope.addresses[i].name
-              });
-            }
-            $log.debug($scope.markers[0]);
-          });
+                for (var i = 0; i < $scope.addresses.length; i++) {
+                    $scope.markers.push({
+                        id: $scope.markers.length,
+                        coords: {
+                            latitude: $scope.addresses[i].lat,
+                            longitude: $scope.addresses[i].long
+                        },
+                    });
+                }
+                $log.debug($scope.markers[0]);
+            });
         }
 
 
-        //  opendata.businessesByDistrict().then(onBizByDistrict, onError);
-        opendata.activeBusinessesByDistrict().then(onBizByDistrict, onError);
-        opendata.activeBusinessesByIndustry().then(onBizByIndustry, onError);
-        opendata.businessesByStartYear().then(onBizByYear, onError);
-       opendata.getBusinessesForMap().then(onMapData, onError);
-        //opendata.activeBusinessesByYear().then(onActiveBizByYear, onError);
-        //  opendata.businessesByEndYear().then(onBizByYear, onError);
+        opendata.activeBusinessesByDistrict().then(onBizByDistrict, onError);     //Active businesses by district API response
+        opendata.activeBusinessesByIndustry().then(onBizByIndustry, onError);     //Active businesses by industry API response
+        opendata.businessesByStartYear().then(onBizByYear, onError);              //New and closed businesses by year API response
+        opendata.getBusinessesForMap().then(onMapData, onError);                  //Data for map API response
 
-        $scope.getBusinessesByCity = getBusinessesByCity;
+        // $scope.getBusinessesByCity = getBusinessesByCity;
 
 
     };

@@ -1,15 +1,16 @@
 (function() {
 
-    var app = angular.module("registeredBusinessAnalysis", ["ngRoute", "amChartsDirective", "ui.bootstrap", "datatables", "uiGmapgoogle-maps"])
-        .config(function(uiGmapGoogleMapApiProvider) {
+    var app = angular.module("registeredBusinessAnalysis", ["ngRoute", "amChartsDirective", "ui.bootstrap", "uiGmapgoogle-maps"])
+        .config(function(uiGmapGoogleMapApiProvider) { // configuration for Google Maps API
             uiGmapGoogleMapApiProvider.configure({
-                //    key: 'your api key',
                 key: 'AIzaSyDRal0B3YwX-T7eAxHYDHDRvNWDXTIHoLI',
-                v: '3.20', //defaults to latest 3.X anyhow
+                v: '3.20',
                 libraries: 'weather,geometry,visualization'
             });
         })
 
+
+    //An added filter to make sure capitalization is done correctly in displayed data
     app.filter('capitalize', function() {
         return function(input) {
             return (!!input) ? input.charAt(0).toUpperCase() + input.substr(1).toLowerCase() : '';
@@ -20,6 +21,7 @@
         //Want to craete 3 separate views
         // index.html will be the shell page (the layout view)
         // main.html (front page of the webiste)
+        // city-search.html (custom search for businesses based on location_city)
 
         $routeProvider
             .when("/main", {

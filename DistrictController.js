@@ -20,6 +20,7 @@
 
     }
 
+    // Used for creating the neighborhood chart
     $scope.dataFromBizByNeighborhoodPromise = function() {
         var deferred = $q.defer();
 
@@ -29,17 +30,14 @@
         return deferred.promise;
     };
 
-
+    // Set the AMCHARTS Properties
     $scope.businessesByNeighborhoodChart = $timeout(function() {
         return {
-            // we can also use a promise for the data property to delay the rendering of
-            // the chart till we actually have data
             data: $scope.dataFromBizByNeighborhoodPromise(),
             type: "serial",
             theme: 'light',
             categoryField: "neighborhood",
             rotate: false,
-            // pathToImages: 'https://cdnjs.cloudflare.com/ajax/libs/amcharts/3.13.0/images/',
             legend: {
                 enabled: true
             },
@@ -66,6 +64,8 @@
         }
     }, 1000)
 
+
+    //This function saves all businesses by industry into the scope.
     var onBizByIndustry = function(data){
       $scope.industryBusinesses = data;
 
@@ -80,6 +80,7 @@
       });
     }
 
+    // Used for creating the industry chart
     $scope.dataFromBizByIndustryPromise = function() {
         var deferred = $q.defer();
 
@@ -89,17 +90,14 @@
         return deferred.promise;
     };
 
-
+    // Set the AMCHARTS Properties for the Industry Chart
     $scope.businessesByIndustryChart = $timeout(function() {
         return {
-            // we can also use a promise for the data property to delay the rendering of
-            // the chart till we actually have data
             data: $scope.dataFromBizByIndustryPromise(),
             type: "serial",
             theme: 'light',
             categoryField: "industry",
             rotate: false,
-            // pathToImages: 'https://cdnjs.cloudflare.com/ajax/libs/amcharts/3.13.0/images/',
             legend: {
                 enabled: true
             },
@@ -130,13 +128,12 @@
         $scope.error = "Couldn't fetch the data";
     }
 
+    //Store the district from the route parameters
     $scope.district_num = $routeParams.district_num;
 
+    // Make API calls for data
     opendata.businessesByNeighborhood($scope.district_num).then(onBizByNeighborhood, onError);
     opendata.businessesByIndustryInDistrict($scope.district_num).then(onBizByIndustry, onError);
-    // opendata.activeBusinessesByYear("2016").then(function(){
-    //   console.log("done!");
-    // }, onError);
   };
 
   app.controller("DistrictController", DistrictController);

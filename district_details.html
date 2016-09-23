@@ -4,6 +4,7 @@
 
 <div class="row">
 
+    <!-- Businesses in a district by Neighborhood -->
     <div class="col-lg-6 col-md-12">
         <div id="wrapper" style="text-align: center">
             <div id="activeByNeighborhood" style="display: inline-block;">
@@ -12,35 +13,37 @@
             </div>
         </div>
         <div ng-show="neighborhoodBusinesses" style="text-align: center">
-          <div style="display: inline-block;">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Neighborhood</th>
-                        <th>Number of Businesses</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat="entry in neighborhoodBusinesses">
-                        <td ng-show="entry.neighborhood">{{entry.neighborhood}}</td>
-                        <td ng-hide="entry.neighborhood">Unlabelled</td>
-                        <td>{{entry.count}}</td>
-                    </tr>
-                </tbody>
-            </table>
-          </div>
+            <div style="display: inline-block;">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Neighborhood</th>
+                            <th>Number of Businesses</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="entry in neighborhoodBusinesses">
+                            <td ng-show="entry.neighborhood">{{entry.neighborhood}}</td>
+                            <td ng-hide="entry.neighborhood">Unlabelled</td>
+                            <td>{{entry.count}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-      </div>
+    </div>
 
+
+    <!-- Businesses in a district by industry -->
     <div class="col-lg-6 col-md-12">
-      <div id="wrapper2" style="text-align: center">
-        <div id="activeByIndustry" style="display: inline-block;">
-          <h4>Businesses by Industry</h4>
-          <am-chart id="businessesByIndustryChart" options="businessesByIndustryChart" height="500px" width="700px"></am-chart>
+        <div id="wrapper2" style="text-align: center">
+            <div id="activeByIndustry" style="display: inline-block;">
+                <h4>Businesses by Industry</h4>
+                <am-chart id="businessesByIndustryChart" options="businessesByIndustryChart" height="500px" width="700px"></am-chart>
+            </div>
         </div>
-      </div>
         <div ng-show="industryBusinesses" style="text-align: center">
-          <div style="display: inline-block;">
+            <div style="display: inline-block;">
                 <table class="table">
                     <thead>
                         <tr>
@@ -56,9 +59,10 @@
                         </tr>
                     </tbody>
                 </table>
-              </div>
             </div>
+        </div>
     </div>
 </div>
 
+<!-- Button for going back to data analysis -->
 <a href="#/main" class="btn btn-primary btn-lg btn-block" role="button" aria-pressed="true"> Go back to main page </a>
