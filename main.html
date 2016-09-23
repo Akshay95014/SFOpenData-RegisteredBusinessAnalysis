@@ -1,6 +1,21 @@
+<div class = "container">
+<div class="row row-offcanvas row-offcanvas-right">
+  <div class="col-lg-12">
+    <div class="jumbotron">
+        <h2>Registered Business Locations - San Francisco Data Set</h2>
+        <p>This web application analyzes data from San Francisco's OpenData Portal. The data set analyzed here includes information about any business that pays taxes to the City and County of San Francisco (taken from the SF OpenData website).
+        The data set includes information about business names, business owners, locations, start and end-dates, and industry classifications. For more information on the dataset, please follow the link in the navigation bar called "Raw Data".</p>
+    </div>
+  </div>
+</div>
+</div>
 <div class="row">
-
     {{error}}
+
+    Center of map: {{map.center}}
+    Zoom of map: {{map.zoom}}
+
+    <ui-gmap-google-map center="map.center" zoom="map.zoom" ng-if="map.center"></ui-gmap-google-map>
 
 
     <div class="col-lg-6 col-md-12">
@@ -15,26 +30,26 @@
 
         <!-- # Businesses Per District -->
         <div ng-show="businessByDistrict" style="text-align: center">
-          <div style="display: inline-block;">
-            <h4>Data</h4>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Supervisory District</th>
-                        <th>Number of Businesses</th>
-                        <th>Details</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat="bizByDist in businessByDistrict | orderBy: 'supervisor_district'">
-                        <td ng-show="bizByDist.supervisor_district">{{bizByDist.supervisor_district | number}}</td>
-                        <td ng-hide="bizByDist.supervisor_district">Unlabelled</td>
-                        <td>{{bizByDist.count | number}}</td>
-                        <td ng-show="bizByDist.supervisor_district"><a href="#/district/{{bizByDist.supervisor_district}}" class="btn btn-primary btn-sm active" role="button" aria-pressed="true">District {{bizByDist.supervisor_district}} details</a></td>
-                    </tr>
-                </tbody>
-            </table>
-          </div>
+            <div style="display: inline-block;">
+                <h4>Data</h4>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Supervisory District</th>
+                            <th>Number of Businesses</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="bizByDist in businessByDistrict | orderBy: 'supervisor_district'">
+                            <td ng-show="bizByDist.supervisor_district">{{bizByDist.supervisor_district | number}}</td>
+                            <td ng-hide="bizByDist.supervisor_district">Unlabelled</td>
+                            <td>{{bizByDist.count | number}}</td>
+                            <td ng-show="bizByDist.supervisor_district"><a href="#/district/{{bizByDist.supervisor_district}}" class="btn btn-primary btn-sm active" role="button" aria-pressed="true">District {{bizByDist.supervisor_district}} details</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
@@ -49,24 +64,24 @@
         </div>
         <!-- # Businesses Per Industry -->
         <div ng-show="businessByIndustry" style="text-align: center">
-          <div style="display: inline-block;">
-            <h4>Data</h4>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>NAIC Code Description / Industry</th>
-                        <th>Number of Businesses</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat="bizByIndustry in businessByIndustry | orderBy: 'count'">
-                        <td ng-show="bizByIndustry.industry">{{bizByIndustry.industry}}</td>
-                        <td ng-hide="bizByIndustry.industry">Unlabelled</td>
-                        <td>{{bizByIndustry.count | number}}</td>
-                    </tr>
-                </tbody>
-            </table>
-          </div>
+            <div style="display: inline-block;">
+                <h4>Data</h4>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>NAIC Code Description / Industry</th>
+                            <th>Number of Businesses</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="bizByIndustry in businessByIndustry | orderBy: 'count'">
+                            <td ng-show="bizByIndustry.industry">{{bizByIndustry.industry}}</td>
+                            <td ng-hide="bizByIndustry.industry">Unlabelled</td>
+                            <td>{{bizByIndustry.count | number}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
     </div>
@@ -87,28 +102,28 @@
 
         <!-- # Businesses Per Year -->
         <div ng-show="businessesByYear" style="text-align: center">
-          <div  style="display: inline-block;">
-            <h4>Data</h4>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Year</th>
-                        <!-- <th>Number of Active Businesses</th> -->
-                        <th>Number of Businesses Opened</th>
-                        <th>Number of Businesses Closed</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat="bizByYear in businessesByYear | orderBy: '-year'">
-                        <td ng-show="bizByYear.year">{{bizByYear.year}}</td>
-                        <td ng-hide="bizByYear.year">Unlabelled</td>
-                        <!-- <td>{{bizByYear.activeBusinesses | number}}</td> -->
-                        <td>{{bizByYear.openedBusinesses | number}}</td>
-                        <td>{{bizByYear.closedBusinesses | number}}</td>
-                    </tr>
-                </tbody>
-            </table>
-          </div>
+            <div style="display: inline-block;">
+                <h4>Data</h4>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Year</th>
+                            <!-- <th>Number of Active Businesses</th> -->
+                            <th>Number of Businesses Opened</th>
+                            <th>Number of Businesses Closed</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="bizByYear in businessesByYear | orderBy: '-year'">
+                            <td ng-show="bizByYear.year">{{bizByYear.year}}</td>
+                            <td ng-hide="bizByYear.year">Unlabelled</td>
+                            <!-- <td>{{bizByYear.activeBusinesses | number}}</td> -->
+                            <td>{{bizByYear.openedBusinesses | number}}</td>
+                            <td>{{bizByYear.closedBusinesses | number}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
     </div>

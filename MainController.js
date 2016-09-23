@@ -2,7 +2,7 @@
 
     var app = angular.module("registeredBusinessAnalysis");
 
-    var MainController = function($scope, $log, $location, opendata, $timeout, $q) {
+    var MainController = function($scope, $log, $location, opendata, $timeout, $q, uiGmapGoogleMapApi) {
 
         function compare(a, b) {
             if (a.year < b.year)
@@ -305,6 +305,10 @@
                 }]
             }
         }, 1000)
+
+        uiGmapGoogleMapApi.then(function(maps) {
+            $scope.map = { center: { latitude: 37.7749, longitude: -122.4194 }, zoom: 13 };
+        });
 
         //  opendata.businessesByDistrict().then(onBizByDistrict, onError);
         opendata.activeBusinessesByDistrict().then(onBizByDistrict, onError);

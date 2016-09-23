@@ -1,10 +1,18 @@
 (function() {
 
-    var app = angular.module("registeredBusinessAnalysis", ["ngRoute", "amChartsDirective", "ui.bootstrap", 'datatables']);
+    var app = angular.module("registeredBusinessAnalysis", ["ngRoute", "amChartsDirective", "ui.bootstrap", "datatables", "uiGmapgoogle-maps"])
+        .config(function(uiGmapGoogleMapApiProvider) {
+            uiGmapGoogleMapApiProvider.configure({
+                //    key: 'your api key',
+                key: 'AIzaSyDRal0B3YwX-T7eAxHYDHDRvNWDXTIHoLI',
+                v: '3.20', //defaults to latest 3.X anyhow
+                libraries: 'weather,geometry,visualization'
+            });
+        })
 
     app.filter('capitalize', function() {
         return function(input) {
-          return (!!input) ? input.charAt(0).toUpperCase() + input.substr(1).toLowerCase() : '';
+            return (!!input) ? input.charAt(0).toUpperCase() + input.substr(1).toLowerCase() : '';
         };
     });
 
@@ -30,5 +38,5 @@
                 redirectTo: "/main"
             });
     });
-//
+    //
 }());
